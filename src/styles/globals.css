@@ -1,0 +1,146 @@
+:root {
+  color-scheme: light;
+  --background: #f5f1e8;
+  --surface: rgba(255, 255, 255, 0.72);
+  --text: #1d1d1f;
+  --muted: #5b5b66;
+  --line: rgba(29, 29, 31, 0.08);
+  --accent: #c75c2f;
+  --accent-strong: #8f3815;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(199, 92, 47, 0.22), transparent 30%),
+    linear-gradient(180deg, #f8f4ec 0%, var(--background) 100%);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 64px;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+}
+
+.brand,
+.subtitle,
+.eyebrow,
+.hero h1,
+.card h2,
+.card p,
+.hero-text,
+.nav a {
+  margin: 0;
+}
+
+.brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.subtitle,
+.hero-text,
+.card p {
+  color: var(--muted);
+}
+
+.nav {
+  display: flex;
+  gap: 18px;
+  font-size: 0.95rem;
+}
+
+.nav a:hover {
+  color: var(--accent-strong);
+}
+
+.hero {
+  padding: 72px 8px 40px;
+}
+
+.eyebrow {
+  color: var(--accent-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  margin-bottom: 14px;
+}
+
+.hero h1 {
+  max-width: 12ch;
+  font-size: clamp(2.8rem, 8vw, 5.5rem);
+  line-height: 0.95;
+}
+
+.hero-text {
+  max-width: 640px;
+  margin-top: 20px;
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.74);
+  min-height: 180px;
+}
+
+.card h2 {
+  margin-bottom: 10px;
+  font-size: 1.25rem;
+}
+
+.card p {
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero {
+    padding-top: 56px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
