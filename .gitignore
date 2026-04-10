@@ -31,6 +31,7 @@ pnpm-debug.log*
 
 # deployment and local tooling
 .vercel
+.idea
 
 # keys and secrets
 *.pem
