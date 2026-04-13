@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
+
+import AppThemeProvider from "@/components/app-theme-provider";
 import "@/styles/globals.css";
 import NavBar from "./NavBar";
 
@@ -15,8 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen antialiased">
-        <NavBar />
-        <main>{children}</main>
+        <AppRouterCacheProvider>
+          <AppThemeProvider>
+            <NavBar />
+            <main>{children}</main>
+          </AppThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

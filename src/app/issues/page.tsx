@@ -1,5 +1,7 @@
-const page = () => {
-  return <div>issues</div>;
+import IssuesClient from "./IssuesClient";
+
+const IssuesPage = () => {
+  return <IssuesClient />;
 };
 
-export default page;
+export default IssuesPage;
