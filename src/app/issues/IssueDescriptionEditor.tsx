@@ -4,21 +4,22 @@ import { FormHelperText, Stack, Typography } from "@mui/material";
 import type SimpleMDE from "easymde";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
+import { Controller, type Control } from "react-hook-form";
+
+import type { IssueFormData } from "@/lib/issues";
 
 const SimpleMdeEditor = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
 
 type IssueDescriptionEditorProps = {
-  value: string;
+  control: Control<IssueFormData>;
   error?: string;
-  onChange: (value: string) => void;
 };
 
 export default function IssueDescriptionEditor({
-  value,
+  control,
   error,
-  onChange,
 }: IssueDescriptionEditorProps) {
   const options = useMemo<SimpleMDE.Options>(
     () => ({
@@ -55,10 +56,16 @@ export default function IssueDescriptionEditor({
       >
         Description
       </Typography>
-      <SimpleMdeEditor
-        value={value}
-        onChange={onChange}
-        options={options}
+      <Controller
+        name="description"
+        control={control}
+        render={({ field }) => (
+          <SimpleMdeEditor
+            value={field.value}
+            onChange={field.onChange}
+            options={options}
+          />
+        )}
       />
       <FormHelperText error={Boolean(error)} sx={{ mx: 0 }}>
         {error ?? " "}

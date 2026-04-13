@@ -5,15 +5,12 @@ import {
   deleteIssue,
   fetchIssues,
   issuesQueryKey,
-  type FieldErrors,
   type IssueFormData,
   type IssueItem,
 } from "@/lib/issues";
 
 type CreateIssueMutationOptions = {
   onSuccess: (newIssue: IssueItem) => void;
-  onValidationError: (fieldErrors: FieldErrors) => void;
-  onError: (message: string) => void;
 };
 
 type DeleteIssueMutationOptions = {
@@ -28,11 +25,7 @@ export const useIssuesQuery = () => {
   });
 };
 
-export const useCreateIssueMutation = ({
-  onSuccess,
-  onValidationError,
-  onError,
-}: CreateIssueMutationOptions) => {
+export const useCreateIssueMutation = ({ onSuccess }: CreateIssueMutationOptions) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -44,19 +37,6 @@ export const useCreateIssueMutation = ({
 
       onSuccess(newIssue);
       await queryClient.invalidateQueries({ queryKey: issuesQueryKey });
-    },
-    onError: (mutationError) => {
-      const errorWithMeta = mutationError as Error & {
-        status?: number;
-        fieldErrors?: FieldErrors;
-      };
-
-      if (errorWithMeta.status === 400 && errorWithMeta.fieldErrors) {
-        onValidationError(errorWithMeta.fieldErrors);
-        return;
-      }
-
-      onError(errorWithMeta.message || "Unable to create issue.");
     },
   });
 };

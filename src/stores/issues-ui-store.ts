@@ -1,25 +1,12 @@
 import { create } from "zustand";
 
-import {
-  type FieldErrors,
-  type IssueFormData,
-  initialIssueFormData,
-} from "@/lib/issues";
-
 type IssuesUiStore = {
   selectedIssueId: number | null;
   issueToDeleteId: number | null;
   isCreateDialogOpen: boolean;
-  formData: IssueFormData;
-  fieldErrors: FieldErrors;
-  submitError: string;
   deleteError: string;
   openCreateDialog: () => void;
   closeCreateDialog: () => void;
-  setFormValue: (name: keyof IssueFormData, value: string) => void;
-  setFieldErrors: (fieldErrors: FieldErrors) => void;
-  setSubmitError: (message: string) => void;
-  resetFormState: () => void;
   openIssueDetails: (issueId: number) => void;
   closeIssueDetails: () => void;
   openDeleteDialog: (issueId: number) => void;
@@ -33,42 +20,11 @@ export const useIssuesUiStore = create<IssuesUiStore>((set) => ({
   selectedIssueId: null,
   issueToDeleteId: null,
   isCreateDialogOpen: false,
-  formData: initialIssueFormData,
-  fieldErrors: {},
-  submitError: "",
   deleteError: "",
-  openCreateDialog: () =>
-    set({
-      isCreateDialogOpen: true,
-      submitError: "",
-      fieldErrors: {},
-    }),
+  openCreateDialog: () => set({ isCreateDialogOpen: true }),
   closeCreateDialog: () =>
     set({
       isCreateDialogOpen: false,
-      formData: initialIssueFormData,
-      fieldErrors: {},
-      submitError: "",
-    }),
-  setFormValue: (name, value) =>
-    set((state) => ({
-      formData: {
-        ...state.formData,
-        [name]: value,
-      },
-      fieldErrors: {
-        ...state.fieldErrors,
-        [name]: undefined,
-      },
-      submitError: "",
-    })),
-  setFieldErrors: (fieldErrors) => set({ fieldErrors }),
-  setSubmitError: (message) => set({ submitError: message }),
-  resetFormState: () =>
-    set({
-      formData: initialIssueFormData,
-      fieldErrors: {},
-      submitError: "",
     }),
   openIssueDetails: (issueId) => set({ selectedIssueId: issueId }),
   closeIssueDetails: () => set({ selectedIssueId: null }),
@@ -86,9 +42,6 @@ export const useIssuesUiStore = create<IssuesUiStore>((set) => ({
   handleCreateSuccess: (issueId) =>
     set({
       isCreateDialogOpen: false,
-      formData: initialIssueFormData,
-      fieldErrors: {},
-      submitError: "",
       selectedIssueId: issueId,
     }),
   handleDeleteSuccess: (issueId) =>

@@ -1,7 +1,12 @@
 "use client";
 
 import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
+import { initialIssueFormData, type FieldErrors as ApiFieldErrors, type IssueFormData } from "@/lib/issues";
+import { createIssueSchema } from "@/lib/validationSchemas";
 import { useIssuesUiStore } from "@/stores/issues-ui-store";
 import IssueCreateDialog from "./IssueCreateDialog";
 import IssueDeleteDialog from "./IssueDeleteDialog";
@@ -18,16 +23,9 @@ export default function IssuesClient() {
     selectedIssueId,
     issueToDeleteId,
     isCreateDialogOpen,
-    formData,
-    fieldErrors,
-    submitError,
     deleteError,
     openCreateDialog,
     closeCreateDialog,
-    setFormValue,
-    setFieldErrors,
-    setSubmitError,
-    resetFormState,
     openIssueDetails,
     closeIssueDetails,
     openDeleteDialog,
@@ -36,8 +34,21 @@ export default function IssuesClient() {
     handleCreateSuccess,
     handleDeleteSuccess,
   } = useIssuesUiStore();
+  const [submitError, setSubmitError] = useState("");
 
   const { data: issues = [], isLoading, error } = useIssuesQuery();
+  const {
+    control,
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm<IssueFormData>({
+    defaultValues: initialIssueFormData,
+    resolver: zodResolver(createIssueSchema),
+  });
 
   const selectedIssue =
     issues.find((issue) => issue.id === selectedIssueId) ?? null;
@@ -46,10 +57,10 @@ export default function IssuesClient() {
 
   const createIssueMutation = useCreateIssueMutation({
     onSuccess: (newIssue) => {
+      setSubmitError("");
+      reset(initialIssueFormData);
       handleCreateSuccess(newIssue.id);
     },
-    onValidationError: setFieldErrors,
-    onError: setSubmitError,
   });
 
   const deleteIssueMutation = useDeleteIssueMutation({
@@ -57,23 +68,40 @@ export default function IssuesClient() {
     onError: setDeleteError,
   });
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = event.target;
-    setFormValue(name as keyof typeof formData, value);
+  const applyServerFieldErrors = (fieldErrors: ApiFieldErrors) => {
+    (Object.entries(fieldErrors) as Array<
+      [keyof IssueFormData, string[] | undefined]
+    >).forEach(([fieldName, messages]) => {
+      if (!messages?.length) {
+        return;
+      }
+
+      setError(fieldName, {
+        type: "server",
+        message: messages[0],
+      });
+    });
   };
 
-  const handleDescriptionChange = (value: string) => {
-    setFormValue("description", value);
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleCreateSubmit = async (formData: IssueFormData) => {
     setSubmitError("");
-    setFieldErrors({});
+    clearErrors();
 
-    await createIssueMutation.mutateAsync(formData);
+    try {
+      await createIssueMutation.mutateAsync(formData);
+    } catch (mutationError) {
+      const errorWithMeta = mutationError as Error & {
+        status?: number;
+        fieldErrors?: ApiFieldErrors;
+      };
+
+      if (errorWithMeta.status === 400 && errorWithMeta.fieldErrors) {
+        applyServerFieldErrors(errorWithMeta.fieldErrors);
+        return;
+      }
+
+      setSubmitError(errorWithMeta.message || "Unable to create issue.");
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -90,8 +118,9 @@ export default function IssuesClient() {
       return;
     }
 
+    setSubmitError("");
+    reset(initialIssueFormData);
     closeCreateDialog();
-    resetFormState();
   };
 
   const handleCloseDeleteDialog = () => {
@@ -150,14 +179,13 @@ export default function IssuesClient() {
 
       <IssueCreateDialog
         open={isCreateDialogOpen}
-        formData={formData}
-        fieldErrors={fieldErrors}
+        control={control}
+        errors={errors}
+        register={register}
         submitError={submitError}
         isSubmitting={createIssueMutation.isPending}
         onClose={handleCloseCreateDialog}
-        onSubmit={handleSubmit}
-        onChange={handleChange}
-        onDescriptionChange={handleDescriptionChange}
+        onSubmit={handleSubmit(handleCreateSubmit)}
       />
 
       <IssueDetailDialog

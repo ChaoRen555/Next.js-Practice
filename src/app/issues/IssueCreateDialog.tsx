@@ -10,34 +10,31 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
 
-import type { FieldErrors, IssueFormData } from "@/lib/issues";
+import type { IssueFormData } from "@/lib/issues";
 import IssueDescriptionEditor from "./IssueDescriptionEditor";
 
 type IssueCreateDialogProps = {
   open: boolean;
-  formData: IssueFormData;
-  fieldErrors: FieldErrors;
+  control: Control<IssueFormData>;
+  errors: FieldErrors<IssueFormData>;
+  register: UseFormRegister<IssueFormData>;
   submitError: string;
   isSubmitting: boolean;
   onClose: () => void;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  onChange: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
-  onDescriptionChange: (value: string) => void;
+  onSubmit: (event?: React.BaseSyntheticEvent) => void;
 };
 
 export default function IssueCreateDialog({
   open,
-  formData,
-  fieldErrors,
+  control,
+  errors,
+  register,
   submitError,
   isSubmitting,
   onClose,
   onSubmit,
-  onChange,
-  onDescriptionChange,
 }: IssueCreateDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -53,20 +50,17 @@ export default function IssueCreateDialog({
 
             <TextField
               label="Title"
-              name="title"
-              value={formData.title}
-              onChange={onChange}
               fullWidth
               required
               autoFocus
-              error={Boolean(fieldErrors.title?.length)}
-              helperText={fieldErrors.title?.[0] ?? " "}
+              error={Boolean(errors.title)}
+              helperText={errors.title?.message ?? " "}
+              {...register("title")}
             />
 
             <IssueDescriptionEditor
-              value={formData.description}
-              onChange={onDescriptionChange}
-              error={fieldErrors.description?.[0]}
+              control={control}
+              error={errors.description?.message}
             />
           </Stack>
         </DialogContent>
