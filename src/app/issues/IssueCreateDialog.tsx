@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 
 import type { FieldErrors, IssueFormData } from "@/lib/issues";
+import IssueDescriptionEditor from "./IssueDescriptionEditor";
 
 type IssueCreateDialogProps = {
   open: boolean;
@@ -24,6 +25,7 @@ type IssueCreateDialogProps = {
   onChange: (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
+  onDescriptionChange: (value: string) => void;
 };
 
 export default function IssueCreateDialog({
@@ -35,6 +37,7 @@ export default function IssueCreateDialog({
   onClose,
   onSubmit,
   onChange,
+  onDescriptionChange,
 }: IssueCreateDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -60,17 +63,10 @@ export default function IssueCreateDialog({
               helperText={fieldErrors.title?.[0] ?? " "}
             />
 
-            <TextField
-              label="Description"
-              name="description"
+            <IssueDescriptionEditor
               value={formData.description}
-              onChange={onChange}
-              fullWidth
-              required
-              multiline
-              minRows={6}
-              error={Boolean(fieldErrors.description?.length)}
-              helperText={fieldErrors.description?.[0] ?? " "}
+              onChange={onDescriptionChange}
+              error={fieldErrors.description?.[0]}
             />
           </Stack>
         </DialogContent>

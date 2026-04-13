@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "easymde/dist/easymde.min.css";
 
 :root {
   color-scheme: light;
@@ -32,6 +33,50 @@ body {
 
 body::selection {
   background: rgba(142, 167, 159, 0.28);
+}
+
+.EasyMDEContainer {
+  width: 100%;
+}
+
+.EasyMDEContainer .CodeMirror,
+.EasyMDEContainer .CodeMirror-scroll {
+  min-height: 220px;
+}
+
+.EasyMDEContainer .CodeMirror,
+.EasyMDEContainer .editor-toolbar,
+.EasyMDEContainer .editor-preview,
+.EasyMDEContainer .editor-preview-side {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.EasyMDEContainer .CodeMirror {
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+}
+
+.EasyMDEContainer .editor-toolbar {
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.EasyMDEContainer .CodeMirror,
+.EasyMDEContainer .editor-preview-side {
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+.EasyMDEContainer .editor-toolbar button {
+  color: var(--muted);
+}
+
+.EasyMDEContainer .editor-toolbar button:hover,
+.EasyMDEContainer .editor-toolbar button.active {
+  border-color: rgba(109, 134, 125, 0.22);
+  background: rgba(142, 167, 159, 0.14);
 }
 
 a {

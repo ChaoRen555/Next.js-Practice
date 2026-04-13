@@ -10,6 +10,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import ReactMarkdown from "react-markdown";
 
 import type { IssueItem } from "@/lib/issues";
 
@@ -67,9 +68,69 @@ export default function IssueDetailDialog({
                 <Typography variant="subtitle2" color="text.secondary">
                   Description
                 </Typography>
-                <Typography sx={{ mt: 1, whiteSpace: "pre-wrap", lineHeight: 1.8 }}>
-                  {issue.description}
-                </Typography>
+                <Box
+                  sx={{
+                    mt: 1,
+                    color: "text.primary",
+                    lineHeight: 1.8,
+                    "& > :first-of-type": {
+                      mt: 0,
+                    },
+                    "& > :last-child": {
+                      mb: 0,
+                    },
+                    "& p": {
+                      my: 1.25,
+                    },
+                    "& ul, & ol": {
+                      pl: 3,
+                      my: 1.5,
+                    },
+                    "& li + li": {
+                      mt: 0.5,
+                    },
+                    "& blockquote": {
+                      m: 0,
+                      px: 2,
+                      py: 1,
+                      borderLeft: "4px solid rgba(109, 134, 125, 0.35)",
+                      backgroundColor: "rgba(255, 255, 255, 0.52)",
+                      color: "text.secondary",
+                      borderRadius: 2,
+                    },
+                    "& code": {
+                      px: 0.75,
+                      py: 0.25,
+                      borderRadius: 1,
+                      backgroundColor: "rgba(109, 134, 125, 0.12)",
+                      fontFamily: "\"SFMono-Regular\", Consolas, monospace",
+                      fontSize: "0.92em",
+                    },
+                    "& pre": {
+                      overflowX: "auto",
+                      p: 2,
+                      borderRadius: 3,
+                      backgroundColor: "rgba(39, 52, 50, 0.92)",
+                      color: "#f4f7f5",
+                    },
+                    "& pre code": {
+                      p: 0,
+                      backgroundColor: "transparent",
+                      color: "inherit",
+                    },
+                    "& a": {
+                      color: "primary.dark",
+                      textDecoration: "underline",
+                    },
+                    "& h1, & h2, & h3, & h4, & h5, & h6": {
+                      mt: 2.5,
+                      mb: 1,
+                      lineHeight: 1.25,
+                    },
+                  }}
+                >
+                  <ReactMarkdown>{issue.description}</ReactMarkdown>
+                </Box>
               </Box>
 
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>

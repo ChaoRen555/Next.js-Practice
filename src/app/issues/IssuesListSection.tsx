@@ -17,7 +17,11 @@ import {
 
 import type { IssueItem } from "@/lib/issues";
 
-import { formatDateTime, formatStatus, truncateText } from "./issue-formatters";
+import {
+  formatDateTime,
+  formatDescriptionPreview,
+  formatStatus,
+} from "./issue-formatters";
 
 type IssuesListSectionProps = {
   issues: IssueItem[];
@@ -112,7 +116,7 @@ export default function IssuesListSection({
                   <TableCell>{index + 1}</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>{issue.title}</TableCell>
                   <TableCell sx={{ color: "text.secondary", maxWidth: 320 }}>
-                    {truncateText(issue.description, 90)}
+                    {formatDescriptionPreview(issue.description, 90)}
                   </TableCell>
                   <TableCell>
                     <Chip

@@ -16,9 +16,12 @@
     "@mui/material-nextjs": "^9.0.0",
     "@prisma/client": "^6.19.3",
     "@tanstack/react-query": "^5.99.0",
+    "easymde": "^2.20.0",
     "next": "^16.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
+    "react-simplemde-editor": "^5.2.0",
     "zod": "^4.3.6",
     "zustand": "^5.0.12"
   },

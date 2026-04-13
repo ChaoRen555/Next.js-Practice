@@ -64,6 +64,10 @@ export default function IssuesClient() {
     setFormValue(name as keyof typeof formData, value);
   };
 
+  const handleDescriptionChange = (value: string) => {
+    setFormValue("description", value);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmitError("");
@@ -153,6 +157,7 @@ export default function IssuesClient() {
         onClose={handleCloseCreateDialog}
         onSubmit={handleSubmit}
         onChange={handleChange}
+        onDescriptionChange={handleDescriptionChange}
       />
 
       <IssueDetailDialog
