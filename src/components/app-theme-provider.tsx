@@ -2,6 +2,7 @@
 
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
+import QueryProvider from "@/components/query-provider";
 import { appTheme } from "@/theme/theme";
 
 type AppThemeProviderProps = {
@@ -12,9 +13,11 @@ export default function AppThemeProvider({
   children,
 }: AppThemeProviderProps) {
   return (
-    <ThemeProvider theme={appTheme}>
-      <CssBaseline />
-      {children}
-    </ThemeProvider>
+    <QueryProvider>
+      <ThemeProvider theme={appTheme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
+    </QueryProvider>
   );
 }
