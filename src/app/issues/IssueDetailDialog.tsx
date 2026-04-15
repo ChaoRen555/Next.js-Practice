@@ -6,7 +6,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Paper,
   Stack,
   Typography,
 } from "@mui/material";
@@ -133,23 +132,26 @@ export default function IssueDetailDialog({
                 </Box>
               </Box>
 
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                <Paper sx={{ p: 2.5, borderRadius: 5, flex: 1 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Created At
-                  </Typography>
-                  <Typography sx={{ mt: 1 }}>
+              <Stack
+                direction={{ xs: "column", md: "row" }}
+                spacing={{ xs: 0.75, md: 3 }}
+                sx={{
+                  pt: 0.5,
+                  color: "text.secondary",
+                }}
+              >
+                <Typography variant="body2">
+                  Created{" "}
+                  <Box component="span" sx={{ ml: 0.75, color: "text.primary" }}>
                     {formatDateTime(issue.createdAt)}
-                  </Typography>
-                </Paper>
-                <Paper sx={{ p: 2.5, borderRadius: 5, flex: 1 }}>
-                  <Typography variant="subtitle2" color="text.secondary">
-                    Updated At
-                  </Typography>
-                  <Typography sx={{ mt: 1 }}>
+                  </Box>
+                </Typography>
+                <Typography variant="body2">
+                  Updated{" "}
+                  <Box component="span" sx={{ ml: 0.75, color: "text.primary" }}>
                     {formatDateTime(issue.updatedAt)}
-                  </Typography>
-                </Paper>
+                  </Box>
+                </Typography>
               </Stack>
             </Stack>
           </DialogContent>

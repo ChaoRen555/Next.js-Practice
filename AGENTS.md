@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository is a Next.js 16 App Router project using TypeScript, Tailwind CSS v4, MUI 9, Prisma, Zod, React Query, and Zustand.
+This repository is a Next.js 16 App Router project using TypeScript, Tailwind CSS v4, MUI 9, Prisma, Zod, React Hook Form, React Query, and Zustand.
 
 Key directories:
 
@@ -24,13 +24,13 @@ Prefer keeping route-specific code close to the route and moving only reusable l
 - `npm run build`: create the production build.
 - `npm run start`: serve the production build locally.
 - `npm run type-check`: run TypeScript checks with `tsc --noEmit`.
-- `npm run lint`: run the Next.js ESLint command configured in `package.json`.
+- `npx eslint src --max-warnings=0`: run ESLint against the source tree.
 
 Validation expectations:
 
 - Run `npm run type-check` before committing any change.
 - Run `npm run build` after changes to routing, layout, Prisma usage, or shared styling/theme setup.
-- Run `npm run lint` when touching app structure, React components, or API handlers.
+- Run `npx eslint src --max-warnings=0` when touching app structure, React components, or API handlers.
 
 ## Coding Style & Naming Conventions
 
@@ -60,8 +60,10 @@ Validation expectations:
 ## Client State Conventions
 
 - Use React Query for server state, fetching, mutations, cache updates, and invalidation.
-- Use Zustand for transient UI state such as selected rows, dialog visibility, form drafts, and local error banners.
+- Use React Hook Form for client-side form state, submission wiring, and field error presentation.
+- Use Zustand for transient UI state such as selected rows, dialog visibility, and local non-form UI state.
 - Do not duplicate server state in Zustand when the same data already lives in React Query cache.
+- Do not store form drafts or field-level validation state in Zustand when the form is already managed by React Hook Form.
 - Prefer feature-level hooks, for example under `src/app/issues/`, to wrap React Query usage and keep page components thin.
 
 ## Testing Guidelines
