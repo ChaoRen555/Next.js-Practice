@@ -1,7 +1,34 @@
 import type { IssueItem } from "@/lib/issues";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 export const formatStatus = (status: IssueItem["status"]) => {
   return status.replaceAll("_", " ");
+};
+
+const statusColorMap: Record<IssueItem["status"], string> = {
+  OPEN: "#c24141",
+  CLOSED: "#2f7d4c",
+  IN_PROGRESS: "#7a4db3",
+};
+
+const statusBackgroundMap: Record<IssueItem["status"], string> = {
+  OPEN: "rgba(194, 65, 65, 0.12)",
+  CLOSED: "rgba(47, 125, 76, 0.12)",
+  IN_PROGRESS: "rgba(122, 77, 179, 0.12)",
+};
+
+export const getStatusChipSx = (
+  status: IssueItem["status"],
+): SxProps<Theme> => {
+  const color = statusColorMap[status];
+  const backgroundColor = statusBackgroundMap[status];
+
+  return {
+    backgroundColor,
+    color,
+    fontWeight: 600,
+    border: `1px solid ${color}`,
+  };
 };
 
 export const formatDateTime = (value: string) => {

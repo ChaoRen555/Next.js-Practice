@@ -21,6 +21,7 @@ import {
   formatDateTime,
   formatDescriptionPreview,
   formatStatus,
+  getStatusChipSx,
 } from "./issue-formatters";
 
 type IssuesListSectionProps = {
@@ -122,11 +123,7 @@ export default function IssuesListSection({
                     <Chip
                       label={formatStatus(issue.status)}
                       size="small"
-                      sx={{
-                        backgroundColor: "rgba(109, 134, 125, 0.12)",
-                        color: "primary.dark",
-                        fontWeight: 600,
-                      }}
+                      sx={getStatusChipSx(issue.status)}
                     />
                   </TableCell>
                   <TableCell sx={{ color: "text.secondary" }}>

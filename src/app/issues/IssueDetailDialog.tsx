@@ -13,7 +13,7 @@ import ReactMarkdown from "react-markdown";
 
 import type { IssueItem } from "@/lib/issues";
 
-import { formatDateTime, formatStatus } from "./issue-formatters";
+import { formatDateTime, formatStatus, getStatusChipSx } from "./issue-formatters";
 
 type IssueDetailDialogProps = {
   issue: IssueItem | null;
@@ -52,11 +52,7 @@ export default function IssueDetailDialog({
                 <Typography variant="h5">{issue.title}</Typography>
                 <Chip
                   label={formatStatus(issue.status)}
-                  sx={{
-                    backgroundColor: "rgba(109, 134, 125, 0.12)",
-                    color: "primary.dark",
-                    fontWeight: 600,
-                  }}
+                  sx={getStatusChipSx(issue.status)}
                 />
               </Box>
             </Stack>
