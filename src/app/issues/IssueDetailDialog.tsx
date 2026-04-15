@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import type { IssueItem } from "@/lib/issues";
 
@@ -81,8 +82,24 @@ export default function IssueDetailDialog({
                       pl: 3,
                       my: 1.5,
                     },
+                    "& ul": {
+                      listStyleType: "disc",
+                    },
+                    "& ol": {
+                      listStyleType: "decimal",
+                    },
+                    "& ul.contains-task-list": {
+                      listStyle: "none",
+                      pl: 0.5,
+                    },
+                    "& li": {
+                      display: "list-item",
+                    },
                     "& li + li": {
                       mt: 0.5,
+                    },
+                    "& li > input[type='checkbox']": {
+                      mr: 1,
                     },
                     "& blockquote": {
                       m: 0,
@@ -113,6 +130,26 @@ export default function IssueDetailDialog({
                       backgroundColor: "transparent",
                       color: "inherit",
                     },
+                    "& table": {
+                      width: "100%",
+                      borderCollapse: "collapse",
+                      my: 2,
+                      overflow: "hidden",
+                      borderRadius: 3,
+                      border: "1px solid rgba(109, 134, 125, 0.18)",
+                    },
+                    "& thead": {
+                      backgroundColor: "rgba(109, 134, 125, 0.08)",
+                    },
+                    "& th, & td": {
+                      px: 1.5,
+                      py: 1,
+                      textAlign: "left",
+                      borderBottom: "1px solid rgba(109, 134, 125, 0.14)",
+                    },
+                    "& tr:last-child td": {
+                      borderBottom: "none",
+                    },
                     "& a": {
                       color: "primary.dark",
                       textDecoration: "underline",
@@ -122,9 +159,16 @@ export default function IssueDetailDialog({
                       mb: 1,
                       lineHeight: 1.25,
                     },
+                    "& hr": {
+                      my: 2.5,
+                      border: 0,
+                      borderTop: "1px solid rgba(109, 134, 125, 0.18)",
+                    },
                   }}
                 >
-                  <ReactMarkdown>{issue.description}</ReactMarkdown>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {issue.description}
+                  </ReactMarkdown>
                 </Box>
               </Box>
 

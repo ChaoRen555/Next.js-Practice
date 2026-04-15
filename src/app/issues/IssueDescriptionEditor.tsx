@@ -1,6 +1,13 @@
 "use client";
 
-import { FormHelperText, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  FormHelperText,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import type SimpleMDE from "easymde";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
@@ -17,6 +24,8 @@ type IssueDescriptionEditorProps = {
   error?: string;
 };
 
+const markdownHighlights = ["Tables", "Task lists", "Code fences", "Quotes"];
+
 export default function IssueDescriptionEditor({
   control,
   error,
@@ -27,15 +36,41 @@ export default function IssueDescriptionEditor({
       spellChecker: false,
       status: false,
       minHeight: "220px",
-      placeholder: "Describe the issue in Markdown...",
+      placeholder: "Describe the issue",
+      promptURLs: true,
+      renderingConfig: {
+        singleLineBreaks: false,
+      },
       toolbar: [
         "bold",
         "italic",
+        "strikethrough",
         "heading",
         "|",
         "quote",
         "unordered-list",
         "ordered-list",
+        "|",
+        {
+          name: "task-list",
+          action: (editor) => {
+            editor.codemirror.replaceSelection(
+              "- [ ] First task\n- [x] Done task",
+            );
+          },
+          className: "fa fa-check-square-o",
+          title: "Task List",
+        },
+        {
+          name: "table",
+          action: (editor) => {
+            editor.codemirror.replaceSelection(
+              "| Column | Value |\n| --- | --- |\n| Item | Detail |",
+            );
+          },
+          className: "fa fa-table",
+          title: "Table",
+        },
         "|",
         "link",
         "code",
@@ -56,6 +91,7 @@ export default function IssueDescriptionEditor({
       >
         Description
       </Typography>
+
       <Controller
         name="description"
         control={control}
