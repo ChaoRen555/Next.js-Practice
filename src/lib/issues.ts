@@ -23,6 +23,7 @@ export const initialIssueFormData: IssueFormData = {
 };
 
 export const issuesQueryKey = ["issues"] as const;
+export const issueQueryKey = (issueId: number) => ["issues", issueId] as const;
 
 export const fetchIssues = async () => {
   const response = await fetch("/api/issues", {
@@ -67,6 +68,24 @@ export const createIssue = async (formData: IssueFormData) => {
     }
 
     throw error;
+  }
+
+  return data as IssueItem;
+};
+
+export const fetchIssue = async (issueId: number) => {
+  const response = await fetch(`/api/issues/${issueId}`, {
+    cache: "no-store",
+  });
+
+  const data = (await response.json()) as
+    | IssueItem
+    | {
+        error?: string;
+      };
+
+  if (!response.ok) {
+    throw new Error(("error" in data && data.error) || "Unable to load issue.");
   }
 
   return data as IssueItem;

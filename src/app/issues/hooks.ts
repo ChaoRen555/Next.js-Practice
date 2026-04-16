@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createIssue,
   deleteIssue,
+  fetchIssue,
+  issueQueryKey,
   fetchIssues,
   issuesQueryKey,
   type IssueFormData,
@@ -22,6 +24,14 @@ export const useIssuesQuery = () => {
   return useQuery({
     queryKey: issuesQueryKey,
     queryFn: fetchIssues,
+  });
+};
+
+export const useIssueQuery = (issueId: number) => {
+  return useQuery({
+    queryKey: issueQueryKey(issueId),
+    queryFn: () => fetchIssue(issueId),
+    enabled: Number.isInteger(issueId) && issueId > 0,
   });
 };
 
