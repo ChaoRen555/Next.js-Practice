@@ -14,7 +14,7 @@ export default function IssueDetailContent({
   issue,
 }: IssueDetailContentProps) {
   return (
-    <Stack spacing={2.5}>
+    <Stack spacing={2.5} sx={{ minWidth: 0 }}>
       <Stack spacing={1.5}>
         <Typography
           variant="overline"
@@ -31,7 +31,16 @@ export default function IssueDetailContent({
             flexWrap: "wrap",
           }}
         >
-          <Typography variant="h4">{issue.title}</Typography>
+          <Typography
+            variant="h4"
+            sx={{
+              minWidth: 0,
+              overflowWrap: "anywhere",
+              wordBreak: "break-word",
+            }}
+          >
+            {issue.title}
+          </Typography>
           <Chip
             label={formatStatus(issue.status)}
             sx={getStatusChipSx(issue.status)}
@@ -46,6 +55,8 @@ export default function IssueDetailContent({
         <Box
           sx={{
             mt: 1,
+            minWidth: 0,
+            maxWidth: "100%",
             color: "text.primary",
             lineHeight: 1.8,
             "& > :first-of-type": {
@@ -53,6 +64,10 @@ export default function IssueDetailContent({
             },
             "& > :last-child": {
               mb: 0,
+            },
+            "& p, & li, & blockquote, & td, & th, & a": {
+              overflowWrap: "anywhere",
+              wordBreak: "break-word",
             },
             "& p": {
               my: 1.25,
@@ -88,8 +103,11 @@ export default function IssueDetailContent({
               backgroundColor: "rgba(255, 255, 255, 0.52)",
               color: "text.secondary",
               borderRadius: 2,
+              maxWidth: "100%",
             },
             "& code": {
+              overflowWrap: "anywhere",
+              wordBreak: "break-word",
               px: 0.75,
               py: 0.25,
               borderRadius: 1,
@@ -98,6 +116,7 @@ export default function IssueDetailContent({
               fontSize: "0.92em",
             },
             "& pre": {
+              maxWidth: "100%",
               overflowX: "auto",
               p: 2,
               borderRadius: 3,
@@ -108,8 +127,14 @@ export default function IssueDetailContent({
               p: 0,
               backgroundColor: "transparent",
               color: "inherit",
+              overflowWrap: "normal",
+              wordBreak: "normal",
+              whiteSpace: "pre",
             },
             "& table": {
+              display: "block",
+              maxWidth: "100%",
+              overflowX: "auto",
               width: "100%",
               borderCollapse: "collapse",
               my: 2,
@@ -121,6 +146,7 @@ export default function IssueDetailContent({
               backgroundColor: "rgba(109, 134, 125, 0.08)",
             },
             "& th, & td": {
+              minWidth: 0,
               px: 1.5,
               py: 1,
               textAlign: "left",

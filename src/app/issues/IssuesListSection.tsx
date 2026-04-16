@@ -19,7 +19,6 @@ import type { IssueItem } from "@/lib/issues";
 
 import {
   formatDateTime,
-  formatDescriptionPreview,
   formatStatus,
   getStatusChipSx,
 } from "./issue-formatters";
@@ -86,7 +85,7 @@ export default function IssuesListSection({
 
       {!isLoading && !loadError && issues.length > 0 ? (
         <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
-          <Table sx={{ minWidth: 760 }} size="medium">
+          <Table sx={{ minWidth: 640 }} size="medium">
             <TableHead
               sx={{
                 backgroundColor: "rgba(109, 134, 125, 0.06)",
@@ -95,7 +94,6 @@ export default function IssuesListSection({
               <TableRow>
                 <TableCell sx={{ fontWeight: 700 }}>ID</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Title</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Description</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Created At</TableCell>
                 <TableCell sx={{ fontWeight: 700, width: 140 }}>Actions</TableCell>
@@ -116,9 +114,6 @@ export default function IssuesListSection({
                 >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>{issue.title}</TableCell>
-                  <TableCell sx={{ color: "text.secondary", maxWidth: 320 }}>
-                    {formatDescriptionPreview(issue.description, 90)}
-                  </TableCell>
                   <TableCell>
                     <Chip
                       label={formatStatus(issue.status)}
