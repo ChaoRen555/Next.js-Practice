@@ -91,6 +91,42 @@ export const fetchIssue = async (issueId: number) => {
   return data as IssueItem;
 };
 
+export const updateIssue = async (issueId: number, formData: IssueFormData) => {
+  const response = await fetch(`/api/issues/${issueId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
+
+  const data = (await response.json()) as
+    | IssueItem
+    | {
+        error?: string;
+        fieldErrors?: FieldErrors;
+      };
+
+  if (!response.ok) {
+    const error = new Error(
+      ("error" in data && data.error) || "Unable to update issue.",
+    ) as Error & {
+      status?: number;
+      fieldErrors?: FieldErrors;
+    };
+
+    error.status = response.status;
+
+    if ("fieldErrors" in data) {
+      error.fieldErrors = data.fieldErrors;
+    }
+
+    throw error;
+  }
+
+  return data as IssueItem;
+};
+
 export const deleteIssue = async (issueId: number) => {
   const response = await fetch(`/api/issues/${issueId}`, {
     method: "DELETE",

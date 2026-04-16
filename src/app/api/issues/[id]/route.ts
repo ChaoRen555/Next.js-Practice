@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+import { createIssueSchema } from "@/lib/validationSchemas";
 
 type RouteContext = {
   params: Promise<{
@@ -95,6 +96,78 @@ export async function GET(
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch issue" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function PATCH(
+  request: Request,
+  context: RouteContext,
+) {
+  const issueId = await getIssueId(context);
+
+  if (issueId === null) {
+    return NextResponse.json(
+      { error: "Invalid issue id" },
+      { status: 400 },
+    );
+  }
+
+  let body: unknown;
+
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { error: "Invalid JSON body" },
+      { status: 400 },
+    );
+  }
+
+  const validation = createIssueSchema.safeParse(body);
+
+  if (!validation.success) {
+    return NextResponse.json(
+      {
+        error: "Validation failed",
+        fieldErrors: validation.error.flatten().fieldErrors,
+      },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const existingIssue = await prisma.issue.findUnique({
+      where: {
+        id: issueId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!existingIssue) {
+      return NextResponse.json(
+        { error: "Issue not found" },
+        { status: 404 },
+      );
+    }
+
+    const issue = await prisma.issue.update({
+      where: {
+        id: issueId,
+      },
+      data: {
+        title: validation.data.title,
+        description: validation.data.description,
+      },
+    });
+
+    return NextResponse.json(issue);
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to update issue" },
       { status: 500 },
     );
   }

@@ -11,6 +11,7 @@ type IssueFormProps = {
   errors: FieldErrors<IssueFormData>;
   register: UseFormRegister<IssueFormData>;
   submitError: string;
+  descriptionText?: string;
 };
 
 export default function IssueForm({
@@ -18,12 +19,11 @@ export default function IssueForm({
   errors,
   register,
   submitError,
+  descriptionText = "Fill in the title and description, then submit to create the issue.",
 }: IssueFormProps) {
   return (
     <Stack spacing={2.5}>
-      <Typography color="text.secondary">
-        Fill in the title and description, then submit to create the issue.
-      </Typography>
+      <Typography color="text.secondary">{descriptionText}</Typography>
 
       {submitError ? <Alert severity="error">{submitError}</Alert> : null}
 

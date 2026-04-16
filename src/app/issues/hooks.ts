@@ -7,6 +7,7 @@ import {
   issueQueryKey,
   fetchIssues,
   issuesQueryKey,
+  updateIssue,
   type IssueFormData,
   type IssueItem,
 } from "@/lib/issues";
@@ -18,6 +19,10 @@ type CreateIssueMutationOptions = {
 type DeleteIssueMutationOptions = {
   onSuccess: (issueId: number) => void;
   onError: (message: string) => void;
+};
+
+type UpdateIssueMutationOptions = {
+  onSuccess: (updatedIssue: IssueItem) => void;
 };
 
 export const useIssuesQuery = () => {
@@ -47,6 +52,39 @@ export const useCreateIssueMutation = ({ onSuccess }: CreateIssueMutationOptions
 
       onSuccess(newIssue);
       await queryClient.invalidateQueries({ queryKey: issuesQueryKey });
+    },
+  });
+};
+
+export const useUpdateIssueMutation = ({ onSuccess }: UpdateIssueMutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      issueId,
+      formData,
+    }: {
+      issueId: number;
+      formData: IssueFormData;
+    }) => updateIssue(issueId, formData),
+    onSuccess: async (updatedIssue) => {
+      queryClient.setQueryData<IssueItem[]>(issuesQueryKey, (current = []) => {
+        return current.map((issue) => {
+          return issue.id === updatedIssue.id ? updatedIssue : issue;
+        });
+      });
+      queryClient.setQueryData<IssueItem>(
+        issueQueryKey(updatedIssue.id),
+        updatedIssue,
+      );
+
+      onSuccess(updatedIssue);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: issuesQueryKey }),
+        queryClient.invalidateQueries({
+          queryKey: issueQueryKey(updatedIssue.id),
+        }),
+      ]);
     },
   });
 };

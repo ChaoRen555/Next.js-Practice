@@ -53,13 +53,23 @@ export default function IssueDetailClient({
         </Paper>
 
         <Stack direction="row" spacing={1.5} sx={{ justifyContent: "space-between" }}>
-          <Button
-            color="error"
-            onClick={() => setIsDeleteDialogOpen(true)}
-            disabled={deleteIssueMutation.isPending}
-          >
-            {deleteIssueMutation.isPending ? "Deleting..." : "Delete"}
-          </Button>
+          <Stack direction="row" spacing={1.5}>
+            <Button
+              component={Link}
+              href={`/issues/${issue.id}/edit`}
+              variant="outlined"
+              disabled={deleteIssueMutation.isPending}
+            >
+              Edit
+            </Button>
+            <Button
+              color="error"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              disabled={deleteIssueMutation.isPending}
+            >
+              {deleteIssueMutation.isPending ? "Deleting..." : "Delete"}
+            </Button>
+          </Stack>
           <Button component={Link} href="/issues" variant="contained">
             Back to Issues
           </Button>
