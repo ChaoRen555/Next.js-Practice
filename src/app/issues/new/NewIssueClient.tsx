@@ -1,6 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
@@ -11,27 +10,21 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 
-import { initialIssueFormData, type FieldErrors as ApiFieldErrors, type IssueFormData } from "@/lib/issues";
-import { createIssueSchema } from "@/lib/validationSchemas";
-import { useCreateIssueMutation } from "../hooks";
+import { initialIssueFormData } from "@/lib/issues";
+import { useCreateIssueMutation, useIssueForm } from "../hooks";
 import IssueForm from "../IssueForm";
 
 export default function NewIssueClient() {
   const router = useRouter();
-  const [submitError, setSubmitError] = useState("");
   const {
     control,
     register,
-    handleSubmit,
-    setError,
-    clearErrors,
-    formState: { errors },
-  } = useForm<IssueFormData>({
+    errors,
+    submitError,
+    buildSubmitHandler,
+  } = useIssueForm({
     defaultValues: initialIssueFormData,
-    resolver: zodResolver(createIssueSchema),
   });
 
   const createIssueMutation = useCreateIssueMutation({
@@ -40,42 +33,6 @@ export default function NewIssueClient() {
       router.refresh();
     },
   });
-
-  const applyServerFieldErrors = (fieldErrors: ApiFieldErrors) => {
-    (Object.entries(fieldErrors) as Array<
-      [keyof IssueFormData, string[] | undefined]
-    >).forEach(([fieldName, messages]) => {
-      if (!messages?.length) {
-        return;
-      }
-
-      setError(fieldName, {
-        type: "server",
-        message: messages[0],
-      });
-    });
-  };
-
-  const handleCreateSubmit = async (formData: IssueFormData) => {
-    setSubmitError("");
-    clearErrors();
-
-    try {
-      await createIssueMutation.mutateAsync(formData);
-    } catch (mutationError) {
-      const errorWithMeta = mutationError as Error & {
-        status?: number;
-        fieldErrors?: ApiFieldErrors;
-      };
-
-      if (errorWithMeta.status === 400 && errorWithMeta.fieldErrors) {
-        applyServerFieldErrors(errorWithMeta.fieldErrors);
-        return;
-      }
-
-      setSubmitError(errorWithMeta.message || "Unable to create issue.");
-    }
-  };
 
   return (
     <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
@@ -96,7 +53,12 @@ export default function NewIssueClient() {
         </Paper>
 
         <Paper sx={{ p: { xs: 3, md: 4 } }}>
-          <Box component="form" onSubmit={handleSubmit(handleCreateSubmit)}>
+          <Box
+            component="form"
+            onSubmit={buildSubmitHandler((formData) => {
+              return createIssueMutation.mutateAsync(formData);
+            })}
+          >
             <Stack spacing={3}>
               <IssueForm
                 control={control}

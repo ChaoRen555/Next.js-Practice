@@ -1,8 +1,16 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import {
+  type DefaultValues,
+  type SubmitHandler,
+  useForm,
+} from "react-hook-form";
 
 import {
   createIssue,
   deleteIssue,
+  type FieldErrors as ApiFieldErrors,
   fetchIssue,
   issueQueryKey,
   fetchIssues,
@@ -11,6 +19,7 @@ import {
   type IssueFormData,
   type IssueItem,
 } from "@/lib/issues";
+import { createIssueSchema } from "@/lib/validationSchemas";
 
 type CreateIssueMutationOptions = {
   onSuccess: (newIssue: IssueItem) => void;
@@ -25,11 +34,88 @@ type UpdateIssueMutationOptions = {
   onSuccess: (updatedIssue: IssueItem) => void;
 };
 
+type IssueMutationError = Error & {
+  status?: number;
+  fieldErrors?: ApiFieldErrors;
+};
+
+type UseIssueFormOptions = {
+  defaultValues: DefaultValues<IssueFormData>;
+};
+
 export const useIssuesQuery = () => {
   return useQuery({
     queryKey: issuesQueryKey,
     queryFn: fetchIssues,
   });
+};
+
+export const useIssueForm = ({
+  defaultValues,
+}: UseIssueFormOptions) => {
+  const [submitError, setSubmitError] = useState("");
+  const {
+    control,
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm<IssueFormData>({
+    defaultValues,
+    resolver: zodResolver(createIssueSchema),
+  });
+
+  const applyServerFieldErrors = (fieldErrors: ApiFieldErrors) => {
+    (Object.entries(fieldErrors) as Array<
+      [keyof IssueFormData, string[] | undefined]
+    >).forEach(([fieldName, messages]) => {
+      if (!messages?.length) {
+        return;
+      }
+
+      setError(fieldName, {
+        type: "server",
+        message: messages[0],
+      });
+    });
+  };
+
+  const handleMutationSubmit = async (submitAction: () => Promise<unknown>) => {
+    setSubmitError("");
+    clearErrors();
+
+    try {
+      await submitAction();
+    } catch (mutationError) {
+      const errorWithMeta = mutationError as IssueMutationError;
+
+      if (errorWithMeta.status === 400 && errorWithMeta.fieldErrors) {
+        applyServerFieldErrors(errorWithMeta.fieldErrors);
+        return;
+      }
+
+      setSubmitError(errorWithMeta.message || "Unable to submit issue.");
+    }
+  };
+
+  const buildSubmitHandler = (
+    submitAction: (formData: IssueFormData) => Promise<unknown>,
+  ) => {
+    const onSubmit: SubmitHandler<IssueFormData> = async (formData) => {
+      await handleMutationSubmit(() => submitAction(formData));
+    };
+
+    return handleSubmit(onSubmit);
+  };
+
+  return {
+    control,
+    register,
+    errors,
+    submitError,
+    buildSubmitHandler,
+  };
 };
 
 export const useIssueQuery = (issueId: number) => {
