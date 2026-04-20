@@ -28,6 +28,7 @@ type IssuesListSectionProps = {
   isLoading: boolean;
   loadError: string | null;
   deletingIssueId: number | null;
+  createIssueHref: string;
   onOpenIssue: (issueId: number) => void;
   onOpenDelete: (issueId: number) => void;
 };
@@ -37,6 +38,7 @@ export default function IssuesListSection({
   isLoading,
   loadError,
   deletingIssueId,
+  createIssueHref,
   onOpenIssue,
   onOpenDelete,
 }: IssuesListSectionProps) {
@@ -50,7 +52,9 @@ export default function IssuesListSection({
           gap: 2,
         }}
       >
-        <Typography variant="h5">Issues List</Typography>
+        <Button href={createIssueHref} variant="contained">
+          Create New Issue
+        </Button>
         <Typography color="text.secondary">
           {issues.length} {issues.length === 1 ? "issue" : "issues"}
         </Typography>

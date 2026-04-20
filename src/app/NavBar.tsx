@@ -8,7 +8,7 @@ const NavBar = async () => {
   const user = session?.user;
 
   return (
-    <header className="sticky top-0 z-50 px-4 pt-4 sm:px-6">
+    <header className="px-4 pt-4 sm:px-6">
       <nav className="relative mx-auto flex w-full max-w-6xl flex-col gap-4 overflow-hidden rounded-[28px] border border-white/65 bg-white/50 px-5 py-4 shadow-[0_24px_70px_-34px_rgba(95,121,113,0.35)] backdrop-blur-2xl sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div
           aria-hidden="true"
