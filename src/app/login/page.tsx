@@ -75,7 +75,7 @@ const LoginPage = async ({
             Welcome back
           </h1>
           <p className="mt-3 text-sm leading-7 text-[#6f817d]">
-            Sign in with your Google account
+            Choose a sign-in method
           </p>
         </div>
 
@@ -121,6 +121,30 @@ const LoginPage = async ({
               />
             </svg>
             <span>Continue with Google</span>
+          </button>
+        </form>
+
+        <form
+          className="mt-4"
+          action={async () => {
+            "use server";
+            await signIn("github", {
+              redirectTo: redirectTarget,
+            });
+          }}
+        >
+          <button
+            type="submit"
+            className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-[#d6e0db] bg-white px-5 py-3.5 text-base font-semibold text-[#273432] shadow-[0_20px_45px_-30px_rgba(39,52,50,0.45)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-[#bcc9c3] hover:bg-[#f8fbf9] hover:shadow-[0_28px_55px_-30px_rgba(39,52,50,0.5)] active:translate-y-0 active:shadow-[0_18px_36px_-26px_rgba(39,52,50,0.45)]"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="h-5 w-5 shrink-0 fill-current"
+            >
+              <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2.18c-3.2.7-3.88-1.36-3.88-1.36-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.71 1.25 3.37.95.1-.75.4-1.25.72-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a10.98 10.98 0 0 1 5.78 0c2.19-1.49 3.16-1.18 3.16-1.18.63 1.58.24 2.75.12 3.04.74.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.28 5.68.41.36.78 1.08.78 2.18v3.23c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
+            </svg>
+            <span>Continue with GitHub</span>
           </button>
         </form>
 
