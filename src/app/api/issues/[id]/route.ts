@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
@@ -20,10 +21,22 @@ const getIssueId = async (context: RouteContext) => {
   return issueId;
 };
 
+const unauthorizedResponse = () =>
+  NextResponse.json(
+    { error: "Unauthorized" },
+    { status: 401 },
+  );
+
 export async function DELETE(
   _request: Request,
   context: RouteContext,
 ) {
+  const session = await auth();
+
+  if (!session?.user) {
+    return unauthorizedResponse();
+  }
+
   const issueId = await getIssueId(context);
 
   if (issueId === null) {
@@ -69,6 +82,12 @@ export async function GET(
   _request: Request,
   context: RouteContext,
 ) {
+  const session = await auth();
+
+  if (!session?.user) {
+    return unauthorizedResponse();
+  }
+
   const issueId = await getIssueId(context);
 
   if (issueId === null) {
@@ -105,6 +124,12 @@ export async function PATCH(
   request: Request,
   context: RouteContext,
 ) {
+  const session = await auth();
+
+  if (!session?.user) {
+    return unauthorizedResponse();
+  }
+
   const issueId = await getIssueId(context);
 
   if (issueId === null) {

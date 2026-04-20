@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server";
 
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
 export async function GET() {
+  const session = await auth();
+
+  if (!session?.user) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 },
+    );
+  }
+
   try {
     const issues = await prisma.issue.findMany({
       orderBy: {
@@ -21,6 +31,15 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const session = await auth();
+
+  if (!session?.user) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 },
+    );
+  }
+
   let body: unknown;
 
   try {

@@ -1,25 +1,11 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { auth, signOut } from "@/auth";
+import NavBarLinks from "./NavBarLinks";
 
-import { cn } from "@/lib/utils";
-
-const navItems = [
-  { href: "/", label: "Dashboard" },
-  { href: "/issues", label: "Issues" },
-];
-
-const NavBar = () => {
-  const pathname = usePathname();
-
-  const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/";
-    }
-
-    return pathname === href || pathname.startsWith(`${href}/`);
-  };
+const NavBar = async () => {
+  const session = await auth();
+  const user = session?.user;
 
   return (
     <header className="sticky top-0 z-50 px-4 pt-4 sm:px-6">
@@ -54,26 +40,47 @@ const NavBar = () => {
           </span>
         </Link>
 
-        <div className="relative flex flex-wrap items-center gap-2 rounded-full border border-white/45 bg-white/35 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
-          {navItems.map((item) => {
-            const active = isActive(item.href);
+        <div className="relative flex flex-wrap items-center justify-end gap-3">
+          <NavBarLinks />
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "rounded-full px-4 py-2.5 text-sm font-medium tracking-[0.02em] transition duration-300",
-                  active
-                    ? "bg-[#6d867d] text-white shadow-[0_16px_35px_-18px_rgba(95,121,113,0.55)]"
-                    : "text-[#41534f] hover:bg-white/70 hover:text-[#5f7971]",
-                )}
+          {user ? (
+            <div className="flex flex-wrap items-center justify-end gap-3 rounded-full border border-white/45 bg-white/35 px-2 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
+              <div className="px-3 text-right">
+                <p className="text-sm font-semibold text-[#31403d]">
+                  {user.name ?? "Signed in"}
+                </p>
+                {user.email ? (
+                  <p className="text-xs text-[#6f817d]">
+                    {user.email}
+                  </p>
+                ) : null}
+              </div>
+              <form
+                action={async () => {
+                  "use server";
+                  revalidatePath("/issues", "layout");
+                  revalidatePath("/", "layout");
+                  await signOut({
+                    redirectTo: "/",
+                  });
+                }}
               >
-                {item.label}
-              </Link>
-            );
-          })}
+                <button
+                  type="submit"
+                  className="rounded-full border border-[#c9d6d0] bg-white/80 px-4 py-2 text-sm font-medium text-[#41534f] transition duration-300 hover:border-white hover:bg-white"
+                >
+                  Logout
+                </button>
+              </form>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="rounded-full border border-white/55 bg-[#6d867d] px-5 py-2.5 text-sm font-medium text-white shadow-[0_16px_35px_-18px_rgba(95,121,113,0.55)] transition duration-300 hover:bg-[#5f7971]"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </nav>
     </header>
