@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { useToaster } from "@/components/toaster-provider";
 import type { IssueItem } from "@/lib/issues";
 import IssueDeleteDialog from "./IssueDeleteDialog";
 import IssuesListSection from "./IssuesListSection";
@@ -12,6 +13,7 @@ import { useDeleteIssueMutation, useIssuesQuery } from "./hooks";
 
 export default function IssuesClient() {
   const router = useRouter();
+  const { showToast } = useToaster();
   const [issueToDelete, setIssueToDelete] = useState<IssueItem | null>(null);
   const [deleteError, setDeleteError] = useState("");
 
@@ -21,8 +23,18 @@ export default function IssuesClient() {
     onSuccess: () => {
       setIssueToDelete(null);
       setDeleteError("");
+      showToast({
+        message: "Issue deleted successfully.",
+        severity: "success",
+      });
     },
-    onError: setDeleteError,
+    onError: (message) => {
+      setDeleteError(message);
+      showToast({
+        message,
+        severity: "error",
+      });
+    },
   });
 
   const handleConfirmDelete = async () => {

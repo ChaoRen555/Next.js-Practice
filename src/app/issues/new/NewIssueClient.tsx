@@ -11,12 +11,14 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { useToaster } from "@/components/toaster-provider";
 import { initialIssueFormData } from "@/lib/issues";
 import { useCreateIssueMutation, useIssueForm } from "../hooks";
 import IssueForm from "../IssueForm";
 
 export default function NewIssueClient() {
   const router = useRouter();
+  const { showToast } = useToaster();
   const {
     control,
     register,
@@ -29,6 +31,10 @@ export default function NewIssueClient() {
 
   const createIssueMutation = useCreateIssueMutation({
     onSuccess: () => {
+      showToast({
+        message: "Issue created successfully.",
+        severity: "success",
+      });
       router.push("/issues");
       router.refresh();
     },

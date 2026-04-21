@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { useToaster } from "@/components/toaster-provider";
 import {
   type IssueItem,
 } from "@/lib/issues";
@@ -25,6 +26,7 @@ export default function EditIssueClient({
   issue,
 }: EditIssueClientProps) {
   const router = useRouter();
+  const { showToast } = useToaster();
   const {
     control,
     register,
@@ -40,6 +42,10 @@ export default function EditIssueClient({
 
   const updateIssueMutation = useUpdateIssueMutation({
     onSuccess: (updatedIssue) => {
+      showToast({
+        message: `Issue #${updatedIssue.id} updated successfully.`,
+        severity: "success",
+      });
       router.push(`/issues/${updatedIssue.id}`);
       router.refresh();
     },

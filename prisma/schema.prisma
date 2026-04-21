@@ -57,7 +57,7 @@ model VerificationToken {
 
 model Issue {
   id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(255) //defult is 191
+  title       String   @db.VarChar(255) //default is 191
   description String   @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
