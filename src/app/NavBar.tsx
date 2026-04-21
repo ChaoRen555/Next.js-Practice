@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { revalidatePath } from "next/cache";
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
 import NavBarLinks from "./NavBarLinks";
+import UserMenu from "./UserMenu";
 
 const NavBar = async () => {
   const session = await auth();
@@ -44,35 +44,11 @@ const NavBar = async () => {
           <NavBarLinks />
 
           {user ? (
-            <div className="flex flex-wrap items-center justify-end gap-3 rounded-full border border-white/45 bg-white/35 px-2 py-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)]">
-              <div className="px-3 text-right">
-                <p className="text-sm font-semibold text-[#31403d]">
-                  {user.name ?? "Signed in"}
-                </p>
-                {user.email ? (
-                  <p className="text-xs text-[#6f817d]">
-                    {user.email}
-                  </p>
-                ) : null}
-              </div>
-              <form
-                action={async () => {
-                  "use server";
-                  revalidatePath("/issues", "layout");
-                  revalidatePath("/", "layout");
-                  await signOut({
-                    redirectTo: "/",
-                  });
-                }}
-              >
-                <button
-                  type="submit"
-                  className="rounded-full border border-[#c9d6d0] bg-white/80 px-4 py-2 text-sm font-medium text-[#41534f] transition duration-300 hover:border-white hover:bg-white"
-                >
-                  Logout
-                </button>
-              </form>
-            </div>
+            <UserMenu
+              name={user.name}
+              email={user.email}
+              image={user.image}
+            />
           ) : (
             <Link
               href="/login"
