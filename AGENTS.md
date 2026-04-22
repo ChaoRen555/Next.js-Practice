@@ -2,12 +2,12 @@
 
 ## Project Structure & Module Organization
 
-This repository is a Next.js 16 App Router project using TypeScript, Tailwind CSS v4, MUI 9, Prisma, Zod, React Hook Form, React Query, and Zustand.
+This repository is a Next.js 16 App Router project using TypeScript, Tailwind CSS v4, MUI 9, Prisma, NextAuth, Zod, React Hook Form, React Query, and Zustand.
 
 Key directories:
 
-- `src/app/`: route entries, layouts, API routes, and route-local components. Current routes include the homepage in `src/app/page.tsx`, the issues page in `src/app/issues/page.tsx`, and the issues APIs in `src/app/api/issues/`.
-- `src/app/issues/`: issues feature UI, feature-level hooks, and page-local helpers.
+- `src/app/`: route entries, layouts, server actions, API routes, and route-local components. Current routes include the homepage, login page, issues list, issue detail, issue edit, issue creation, and issues APIs.
+- `src/app/issues/`: issues feature UI, feature-level hooks, Markdown editor integration, and page-local helpers.
 - `src/components/`: shared providers and reusable UI such as `app-theme-provider.tsx` and `query-provider.tsx`.
 - `src/lib/`: shared helpers and infrastructure such as `prisma.ts`, `issues.ts`, validation schemas, and general utilities.
 - `src/stores/`: Zustand stores for client-side UI state.
@@ -24,13 +24,14 @@ Prefer keeping route-specific code close to the route and moving only reusable l
 - `npm run build`: create the production build.
 - `npm run start`: serve the production build locally.
 - `npm run type-check`: run TypeScript checks with `tsc --noEmit`.
-- `npx eslint src --max-warnings=0`: run ESLint against the source tree.
+- `npm run lint`: run the project ESLint configuration.
+- `npx eslint src --max-warnings=0`: run ESLint directly against the source tree when targeted source-only validation is needed.
 
 Validation expectations:
 
 - Run `npm run type-check` before committing any change.
 - Run `npm run build` after changes to routing, layout, Prisma usage, or shared styling/theme setup.
-- Run `npx eslint src --max-warnings=0` when touching app structure, React components, or API handlers.
+- Run `npm run lint` or `npx eslint src --max-warnings=0` when touching app structure, React components, or API handlers.
 
 ## Coding Style & Naming Conventions
 
@@ -56,6 +57,8 @@ Validation expectations:
 - Return explicit HTTP status codes and structured JSON errors from API routes.
 - When changing persisted data structures, update `prisma/schema.prisma` and commit the corresponding migration.
 - Keep fetch/query functions in shared feature helpers such as `src/lib/issues.ts` when multiple hooks or components need the same server contract.
+- Keep issue serialization logic centralized in `src/lib/issues.ts` so API handlers and server-rendered pages return the same shape.
+- Preserve the `Issue.creator` relation and `creatorId` handling when changing issue persistence or API response shapes.
 
 ## Client State Conventions
 
@@ -65,6 +68,7 @@ Validation expectations:
 - Do not duplicate server state in Zustand when the same data already lives in React Query cache.
 - Do not store form drafts or field-level validation state in Zustand when the form is already managed by React Hook Form.
 - Prefer feature-level hooks, for example under `src/app/issues/`, to wrap React Query usage and keep page components thin.
+- Keep Markdown editing and preview behavior inside the issues feature instead of scattering editor-specific state across shared layers.
 
 ## Testing Guidelines
 
