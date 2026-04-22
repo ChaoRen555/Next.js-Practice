@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
+import { serializeIssue } from "@/lib/issues";
 import { prisma } from "@/lib/prisma";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
@@ -16,12 +17,19 @@ export async function GET() {
 
   try {
     const issues = await prisma.issue.findMany({
+      include: {
+        creator: {
+          select: {
+            name: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    return NextResponse.json(issues);
+    return NextResponse.json(issues.map(serializeIssue));
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch issues" },
@@ -69,10 +77,22 @@ export async function POST(request: Request) {
         title: validation.data.title,
         description: validation.data.description,
         status: "OPEN",
+        creator: {
+          connect: {
+            id: session.user.id,
+          },
+        },
+      },
+      include: {
+        creator: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
-    return NextResponse.json(issue, { status: 201 });
+    return NextResponse.json(serializeIssue(issue), { status: 201 });
   } catch {
     return NextResponse.json(
       { error: "Failed to create issue" },

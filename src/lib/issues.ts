@@ -1,3 +1,5 @@
+import type { Issue, User } from "@prisma/client";
+
 export type IssueItem = {
   id: number;
   title: string;
@@ -5,6 +7,7 @@ export type IssueItem = {
   status: "OPEN" | "CLOSED" | "IN_PROGRESS";
   createdAt: string;
   updatedAt: string;
+  createdByName: string | null;
 };
 
 export type FieldErrors = {
@@ -24,6 +27,22 @@ export const initialIssueFormData: IssueFormData = {
 
 export const issuesQueryKey = ["issues"] as const;
 export const issueQueryKey = (issueId: number) => ["issues", issueId] as const;
+
+type IssueWithCreator = Issue & {
+  creator: Pick<User, "name"> | null;
+};
+
+export const serializeIssue = (issue: IssueWithCreator): IssueItem => {
+  return {
+    id: issue.id,
+    title: issue.title,
+    description: issue.description,
+    status: issue.status,
+    createdAt: issue.createdAt.toISOString(),
+    updatedAt: issue.updatedAt.toISOString(),
+    createdByName: issue.creator?.name ?? null,
+  };
+};
 
 export const fetchIssues = async () => {
   const response = await fetch("/api/issues", {

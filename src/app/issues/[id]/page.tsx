@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import type { IssueItem } from "@/lib/issues";
+import { serializeIssue } from "@/lib/issues";
 import { prisma } from "@/lib/prisma";
 import IssueDetailClient from "./IssueDetailClient";
 
@@ -21,6 +21,13 @@ const IssueDetailPage = async ({
   }
 
   const issue = await prisma.issue.findUnique({
+    include: {
+      creator: {
+        select: {
+          name: true,
+        },
+      },
+    },
     where: {
       id: issueId,
     },
@@ -30,13 +37,7 @@ const IssueDetailPage = async ({
     notFound();
   }
 
-  const serializedIssue: IssueItem = {
-    ...issue,
-    createdAt: issue.createdAt.toISOString(),
-    updatedAt: issue.updatedAt.toISOString(),
-  };
-
-  return <IssueDetailClient issue={serializedIssue} />;
+  return <IssueDetailClient issue={serializeIssue(issue)} />;
 };
 
 export default IssueDetailPage;

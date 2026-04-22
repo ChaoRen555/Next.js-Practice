@@ -98,6 +98,7 @@ export default function IssuesListSection({
               <TableRow>
                 <TableCell sx={{ fontWeight: 700 }}>ID</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Title</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Created By</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Created At</TableCell>
                 <TableCell sx={{ fontWeight: 700, width: 140 }}>Actions</TableCell>
@@ -118,6 +119,9 @@ export default function IssuesListSection({
                 >
                   <TableCell>{index + 1}</TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>{issue.title}</TableCell>
+                  <TableCell sx={{ color: "text.secondary" }}>
+                    {issue.createdByName ?? "Unknown"}
+                  </TableCell>
                   <TableCell>
                     <Chip
                       label={formatStatus(issue.status)}

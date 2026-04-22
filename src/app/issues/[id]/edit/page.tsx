@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import type { IssueItem } from "@/lib/issues";
+import { serializeIssue } from "@/lib/issues";
 import { prisma } from "@/lib/prisma";
 import EditIssueClient from "./EditIssueClient";
 
@@ -21,6 +21,13 @@ const EditIssuePage = async ({
   }
 
   const issue = await prisma.issue.findUnique({
+    include: {
+      creator: {
+        select: {
+          name: true,
+        },
+      },
+    },
     where: {
       id: issueId,
     },
@@ -30,13 +37,7 @@ const EditIssuePage = async ({
     notFound();
   }
 
-  const serializedIssue: IssueItem = {
-    ...issue,
-    createdAt: issue.createdAt.toISOString(),
-    updatedAt: issue.updatedAt.toISOString(),
-  };
-
-  return <EditIssueClient issue={serializedIssue} />;
+  return <EditIssueClient issue={serializeIssue(issue)} />;
 };
 
 export default EditIssuePage;

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
+import { serializeIssue } from "@/lib/issues";
 import { prisma } from "@/lib/prisma";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
@@ -99,6 +100,13 @@ export async function GET(
 
   try {
     const issue = await prisma.issue.findUnique({
+      include: {
+        creator: {
+          select: {
+            name: true,
+          },
+        },
+      },
       where: {
         id: issueId,
       },
@@ -111,7 +119,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(issue);
+    return NextResponse.json(serializeIssue(issue));
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch issue" },
@@ -187,9 +195,16 @@ export async function PATCH(
         title: validation.data.title,
         description: validation.data.description,
       },
+      include: {
+        creator: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
 
-    return NextResponse.json(issue);
+    return NextResponse.json(serializeIssue(issue));
   } catch {
     return NextResponse.json(
       { error: "Failed to update issue" },

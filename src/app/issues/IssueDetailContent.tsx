@@ -192,6 +192,12 @@ export default function IssueDetailContent({
           </Box>
         </Typography>
         <Typography variant="body2">
+          Created By{" "}
+          <Box component="span" sx={{ ml: 0.75, color: "text.primary" }}>
+            {issue.createdByName ?? "Unknown"}
+          </Box>
+        </Typography>
+        <Typography variant="body2">
           Updated{" "}
           <Box component="span" sx={{ ml: 0.75, color: "text.primary" }}>
             {formatDateTime(issue.updatedAt)}
