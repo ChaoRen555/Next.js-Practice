@@ -2,7 +2,7 @@
 
 import { Container, Stack } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useToaster } from "@/components/toaster-provider";
 import {
@@ -37,12 +37,38 @@ export default function IssuesClient() {
     orderByParam && isIssueOrderBy(orderByParam) ? orderByParam : "createdAt";
   const order: IssueOrderDirection =
     orderParam && isIssueOrderDirection(orderParam) ? orderParam : "desc";
+  const pageParam = searchParams.get("page");
+  const parsedPage = pageParam ? Number.parseInt(pageParam, 10) : 1;
+  const page =
+    Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
-  const { data: issues = [], isLoading, error } = useIssuesQuery({
+  const { data, isLoading, error } = useIssuesQuery({
     status: selectedStatus,
     orderBy,
     order,
+    page,
   });
+  const issues = data?.issues ?? [];
+  const totalIssues = data?.total ?? 0;
+  const currentPage = data?.page ?? page;
+  const pageCount = data?.pageCount ?? 1;
+
+  useEffect(() => {
+    if (!data || currentPage === page) {
+      return;
+    }
+
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (currentPage === 1) {
+      nextSearchParams.delete("page");
+    } else {
+      nextSearchParams.set("page", currentPage.toString());
+    }
+
+    const queryString = nextSearchParams.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname);
+  }, [currentPage, data, page, pathname, router, searchParams]);
 
   const deleteIssueMutation = useDeleteIssueMutation({
     onSuccess: () => {
@@ -92,6 +118,8 @@ export default function IssuesClient() {
       nextSearchParams.set("status", nextStatusFilter);
     }
 
+    nextSearchParams.delete("page");
+
     const queryString = nextSearchParams.toString();
     router.replace(queryString ? `${pathname}?${queryString}` : pathname);
   };
@@ -103,6 +131,20 @@ export default function IssuesClient() {
 
     nextSearchParams.set("orderBy", nextOrderBy);
     nextSearchParams.set("order", nextOrder);
+    nextSearchParams.delete("page");
+
+    const queryString = nextSearchParams.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname);
+  };
+
+  const handlePageChange = (nextPage: number) => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (nextPage === 1) {
+      nextSearchParams.delete("page");
+    } else {
+      nextSearchParams.set("page", nextPage.toString());
+    }
 
     const queryString = nextSearchParams.toString();
     router.replace(queryString ? `${pathname}?${queryString}` : pathname);
@@ -116,12 +158,16 @@ export default function IssuesClient() {
           statusFilter={statusFilter}
           orderBy={orderBy}
           order={order}
+          page={currentPage}
+          pageCount={pageCount}
+          totalIssues={totalIssues}
           isLoading={isLoading}
           loadError={error ? loadError : null}
           deletingIssueId={deleteIssueMutation.isPending ? issueToDelete?.id ?? null : null}
           createIssueHref="/issues/new"
           onStatusFilterChange={handleStatusFilterChange}
           onOrderChange={handleOrderChange}
+          onPageChange={handlePageChange}
           onOpenIssue={(issueId) => {
             router.push(`/issues/${issueId}`);
           }}

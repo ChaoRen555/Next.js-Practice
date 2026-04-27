@@ -6,6 +6,7 @@ import {
   isIssueOrderBy,
   isIssueOrderDirection,
   isIssueStatus,
+  issuePageSize,
   serializeIssue,
   type IssueOrderBy,
   type IssueOrderDirection,
@@ -47,6 +48,8 @@ export async function GET(request: Request) {
   const status = searchParams.get("status");
   const orderByParam = searchParams.get("orderBy") ?? defaultOrderBy;
   const orderParam = searchParams.get("order") ?? defaultOrder;
+  const pageParam = searchParams.get("page");
+  const page = pageParam ? Number.parseInt(pageParam, 10) : 1;
 
   if (status !== null && !isIssueStatus(status)) {
     return NextResponse.json(
@@ -69,13 +72,26 @@ export async function GET(request: Request) {
     );
   }
 
+  if (!Number.isInteger(page) || page <= 0) {
+    return NextResponse.json(
+      { error: "Invalid issue page" },
+      { status: 400 },
+    );
+  }
+
   try {
+    const where: Prisma.IssueWhereInput | undefined = status
+      ? {
+          status,
+        }
+      : undefined;
+    const total = await prisma.issue.count({
+      where,
+    });
+    const pageCount = Math.max(1, Math.ceil(total / issuePageSize));
+    const clampedPage = Math.min(page, pageCount);
     const issues = await prisma.issue.findMany({
-      where: status
-        ? {
-            status,
-          }
-        : undefined,
+      where,
       include: {
         creator: {
           select: {
@@ -84,9 +100,17 @@ export async function GET(request: Request) {
         },
       },
       orderBy: getIssueOrderBy(orderByParam, orderParam),
+      skip: (clampedPage - 1) * issuePageSize,
+      take: issuePageSize,
     });
 
-    return NextResponse.json(issues.map(serializeIssue));
+    return NextResponse.json({
+      issues: issues.map(serializeIssue),
+      total,
+      page: clampedPage,
+      pageSize: issuePageSize,
+      pageCount,
+    });
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch issues" },

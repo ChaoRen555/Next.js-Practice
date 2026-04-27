@@ -19,6 +19,7 @@ export const issueOrderByFields = [
   "createdAt",
 ] as const;
 export const issueOrderDirections = ["asc", "desc"] as const;
+export const issuePageSize = 5;
 
 export type IssueStatus = (typeof issueStatuses)[number];
 export type IssueStatusFilter = IssueStatus | "ALL";
@@ -29,6 +30,15 @@ export type IssuesListParams = {
   status: IssueStatus | null;
   orderBy: IssueOrderBy;
   order: IssueOrderDirection;
+  page: number;
+};
+
+export type IssuesListResponse = {
+  issues: IssueItem[];
+  total: number;
+  page: number;
+  pageSize: typeof issuePageSize;
+  pageCount: number;
 };
 
 export const isIssueStatus = (status: string): status is IssueStatus => {
@@ -86,6 +96,7 @@ export const fetchIssues = async ({
   status,
   orderBy,
   order,
+  page,
 }: IssuesListParams) => {
   const searchParams = new URLSearchParams();
 
@@ -95,6 +106,7 @@ export const fetchIssues = async ({
 
   searchParams.set("orderBy", orderBy);
   searchParams.set("order", order);
+  searchParams.set("page", page.toString());
 
   const queryString = searchParams.toString();
   const response = await fetch(`/api/issues${queryString ? `?${queryString}` : ""}`, {
@@ -105,7 +117,7 @@ export const fetchIssues = async ({
     throw new Error("Unable to load issues right now.");
   }
 
-  return (await response.json()) as IssueItem[];
+  return (await response.json()) as IssuesListResponse;
 };
 
 export const createIssue = async (formData: IssueFormData) => {

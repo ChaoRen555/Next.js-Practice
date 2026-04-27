@@ -7,6 +7,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  Pagination,
   Paper,
   Select,
   type SelectChangeEvent,
@@ -41,12 +42,16 @@ type IssuesListSectionProps = {
   statusFilter: IssueStatusFilter;
   orderBy: IssueOrderBy;
   order: IssueOrderDirection;
+  page: number;
+  pageCount: number;
+  totalIssues: number;
   isLoading: boolean;
   loadError: string | null;
   deletingIssueId: number | null;
   createIssueHref: string;
   onStatusFilterChange: (statusFilter: IssueStatusFilter) => void;
   onOrderChange: (orderBy: IssueOrderBy) => void;
+  onPageChange: (page: number) => void;
   onOpenIssue: (issueId: number) => void;
   onOpenDelete: (issueId: number) => void;
 };
@@ -66,12 +71,16 @@ export default function IssuesListSection({
   statusFilter,
   orderBy,
   order,
+  page,
+  pageCount,
+  totalIssues,
   isLoading,
   loadError,
   deletingIssueId,
   createIssueHref,
   onStatusFilterChange,
   onOrderChange,
+  onPageChange,
   onOpenIssue,
   onOpenDelete,
 }: IssuesListSectionProps) {
@@ -118,7 +127,7 @@ export default function IssuesListSection({
             </Select>
           </FormControl>
           <Typography color="text.secondary">
-            {issues.length} {issues.length === 1 ? "issue" : "issues"}
+            {totalIssues} {totalIssues === 1 ? "issue" : "issues"}
           </Typography>
         </Stack>
       </Box>
@@ -155,97 +164,110 @@ export default function IssuesListSection({
       ) : null}
 
       {!isLoading && !loadError && issues.length > 0 ? (
-        <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
-          <Table sx={{ minWidth: 640 }} size="medium">
-            <TableHead
-              sx={{
-                backgroundColor: "rgba(109, 134, 125, 0.06)",
-              }}
-            >
-              <TableRow>
-                <TableCell sx={{ fontWeight: 700, width: 64 }}>ID</TableCell>
-                {sortableColumns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    sx={{
-                      fontWeight: 700,
-                      ...(column.id === "title"
-                        ? {
-                            maxWidth: 260,
-                            width: "34%",
-                          }
-                        : {}),
-                    }}
-                  >
-                    <TableSortLabel
-                      active={orderBy === column.id}
-                      direction={orderBy === column.id ? order : "asc"}
-                      onClick={() => onOrderChange(column.id)}
+        <Stack spacing={2}>
+          <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
+            <Table sx={{ minWidth: 640 }} size="medium">
+              <TableHead
+                sx={{
+                  backgroundColor: "rgba(109, 134, 125, 0.06)",
+                }}
+              >
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 700, width: 64 }}>ID</TableCell>
+                  {sortableColumns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      sx={{
+                        fontWeight: 700,
+                        ...(column.id === "title"
+                          ? {
+                              maxWidth: 260,
+                              width: "34%",
+                            }
+                          : {}),
+                      }}
                     >
-                      {column.label}
-                    </TableSortLabel>
-                  </TableCell>
-                ))}
-                <TableCell sx={{ fontWeight: 700, width: 140 }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {issues.map((issue, index) => (
-                <TableRow
-                  key={issue.id}
-                  hover
-                  onClick={() => onOpenIssue(issue.id)}
-                  sx={{
-                    cursor: "pointer",
-                    "&:hover": {
-                      backgroundColor: "rgba(109, 134, 125, 0.04)",
-                    },
-                  }}
-                >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell
-                    sx={{
-                      fontWeight: 600,
-                      maxWidth: 260,
-                      overflowWrap: "anywhere",
-                      whiteSpace: "normal",
-                      width: "34%",
-                    }}
-                  >
-                    {issue.title}
-                  </TableCell>
-                  <TableCell sx={{ color: "text.secondary" }}>
-                    {issue.createdByName ?? "Unknown"}
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      label={formatStatus(issue.status)}
-                      size="small"
-                      sx={getStatusChipSx(issue.status)}
-                    />
-                  </TableCell>
-                  <TableCell sx={{ color: "text.secondary" }}>
-                    {formatDateTime(issue.createdAt)}
-                  </TableCell>
-                  <TableCell
-                    onClick={(event) => event.stopPropagation()}
-                    sx={{ whiteSpace: "nowrap" }}
-                  >
-                    <Button
-                      color="error"
-                      variant="outlined"
-                      size="small"
-                      disabled={deletingIssueId !== null}
-                      onClick={() => onOpenDelete(issue.id)}
-                    >
-                      {deletingIssueId === issue.id ? "Deleting..." : "Delete"}
-                    </Button>
-                  </TableCell>
+                      <TableSortLabel
+                        active={orderBy === column.id}
+                        direction={orderBy === column.id ? order : "asc"}
+                        onClick={() => onOrderChange(column.id)}
+                      >
+                        {column.label}
+                      </TableSortLabel>
+                    </TableCell>
+                  ))}
+                  <TableCell sx={{ fontWeight: 700, width: 140 }}>Actions</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+              <TableBody>
+                {issues.map((issue, index) => (
+                  <TableRow
+                    key={issue.id}
+                    hover
+                    onClick={() => onOpenIssue(issue.id)}
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: "rgba(109, 134, 125, 0.04)",
+                      },
+                    }}
+                  >
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        maxWidth: 260,
+                        overflowWrap: "anywhere",
+                        whiteSpace: "normal",
+                        width: "34%",
+                      }}
+                    >
+                      {issue.title}
+                    </TableCell>
+                    <TableCell sx={{ color: "text.secondary" }}>
+                      {issue.createdByName ?? "Unknown"}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={formatStatus(issue.status)}
+                        size="small"
+                        sx={getStatusChipSx(issue.status)}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ color: "text.secondary" }}>
+                      {formatDateTime(issue.createdAt)}
+                    </TableCell>
+                    <TableCell
+                      onClick={(event) => event.stopPropagation()}
+                      sx={{ whiteSpace: "nowrap" }}
+                    >
+                      <Button
+                        color="error"
+                        variant="outlined"
+                        size="small"
+                        disabled={deletingIssueId !== null}
+                        onClick={() => onOpenDelete(issue.id)}
+                      >
+                        {deletingIssueId === issue.id ? "Deleting..." : "Delete"}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {pageCount > 1 ? (
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Pagination
+                count={pageCount}
+                page={page}
+                color="primary"
+                onChange={(_, nextPage) => onPageChange(nextPage)}
+              />
+            </Box>
+          ) : null}
+        </Stack>
       ) : null}
     </Stack>
   );
