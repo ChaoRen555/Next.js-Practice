@@ -6,8 +6,12 @@ import { useState } from "react";
 
 import { useToaster } from "@/components/toaster-provider";
 import {
+  isIssueOrderBy,
+  isIssueOrderDirection,
   isIssueStatus,
   type IssueItem,
+  type IssueOrderBy,
+  type IssueOrderDirection,
   type IssueStatus,
   type IssueStatusFilter,
 } from "@/lib/issues";
@@ -27,8 +31,18 @@ export default function IssuesClient() {
   const selectedStatus: IssueStatus | null =
     statusParam && isIssueStatus(statusParam) ? statusParam : null;
   const statusFilter: IssueStatusFilter = selectedStatus ?? "ALL";
+  const orderByParam = searchParams.get("orderBy");
+  const orderParam = searchParams.get("order");
+  const orderBy: IssueOrderBy =
+    orderByParam && isIssueOrderBy(orderByParam) ? orderByParam : "createdAt";
+  const order: IssueOrderDirection =
+    orderParam && isIssueOrderDirection(orderParam) ? orderParam : "desc";
 
-  const { data: issues = [], isLoading, error } = useIssuesQuery(selectedStatus);
+  const { data: issues = [], isLoading, error } = useIssuesQuery({
+    status: selectedStatus,
+    orderBy,
+    order,
+  });
 
   const deleteIssueMutation = useDeleteIssueMutation({
     onSuccess: () => {
@@ -82,17 +96,32 @@ export default function IssuesClient() {
     router.replace(queryString ? `${pathname}?${queryString}` : pathname);
   };
 
+  const handleOrderChange = (nextOrderBy: IssueOrderBy) => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+    const nextOrder: IssueOrderDirection =
+      orderBy === nextOrderBy && order === "asc" ? "desc" : "asc";
+
+    nextSearchParams.set("orderBy", nextOrderBy);
+    nextSearchParams.set("order", nextOrder);
+
+    const queryString = nextSearchParams.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname);
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
       <Stack spacing={3}>
         <IssuesListSection
           issues={issues}
           statusFilter={statusFilter}
+          orderBy={orderBy}
+          order={order}
           isLoading={isLoading}
           loadError={error ? loadError : null}
           deletingIssueId={deleteIssueMutation.isPending ? issueToDelete?.id ?? null : null}
           createIssueHref="/issues/new"
           onStatusFilterChange={handleStatusFilterChange}
+          onOrderChange={handleOrderChange}
           onOpenIssue={(issueId) => {
             router.push(`/issues/${issueId}`);
           }}

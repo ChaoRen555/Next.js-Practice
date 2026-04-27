@@ -19,7 +19,7 @@ import {
   updateIssue,
   type IssueFormData,
   type IssueItem,
-  type IssueStatus,
+  type IssuesListParams,
 } from "@/lib/issues";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
@@ -45,10 +45,10 @@ type UseIssueFormOptions = {
   defaultValues: DefaultValues<IssueFormData>;
 };
 
-export const useIssuesQuery = (status: IssueStatus | null) => {
+export const useIssuesQuery = (params: IssuesListParams) => {
   return useQuery({
-    queryKey: issuesListQueryKey(status),
-    queryFn: () => fetchIssues(status),
+    queryKey: issuesListQueryKey(params),
+    queryFn: () => fetchIssues(params),
   });
 };
 

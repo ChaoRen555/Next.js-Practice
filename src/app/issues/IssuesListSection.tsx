@@ -17,12 +17,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   Typography,
 } from "@mui/material";
 
 import {
   issueStatuses,
   type IssueItem,
+  type IssueOrderBy,
+  type IssueOrderDirection,
   type IssueStatusFilter,
 } from "@/lib/issues";
 
@@ -36,23 +39,39 @@ import {
 type IssuesListSectionProps = {
   issues: IssueItem[];
   statusFilter: IssueStatusFilter;
+  orderBy: IssueOrderBy;
+  order: IssueOrderDirection;
   isLoading: boolean;
   loadError: string | null;
   deletingIssueId: number | null;
   createIssueHref: string;
   onStatusFilterChange: (statusFilter: IssueStatusFilter) => void;
+  onOrderChange: (orderBy: IssueOrderBy) => void;
   onOpenIssue: (issueId: number) => void;
   onOpenDelete: (issueId: number) => void;
 };
 
+const sortableColumns: Array<{
+  id: IssueOrderBy;
+  label: string;
+}> = [
+  { id: "title", label: "Title" },
+  { id: "createdByName", label: "Created By" },
+  { id: "status", label: "Status" },
+  { id: "createdAt", label: "Created At" },
+];
+
 export default function IssuesListSection({
   issues,
   statusFilter,
+  orderBy,
+  order,
   isLoading,
   loadError,
   deletingIssueId,
   createIssueHref,
   onStatusFilterChange,
+  onOrderChange,
   onOpenIssue,
   onOpenDelete,
 }: IssuesListSectionProps) {
@@ -144,11 +163,29 @@ export default function IssuesListSection({
               }}
             >
               <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>ID</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Title</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Created By</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Created At</TableCell>
+                <TableCell sx={{ fontWeight: 700, width: 64 }}>ID</TableCell>
+                {sortableColumns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    sx={{
+                      fontWeight: 700,
+                      ...(column.id === "title"
+                        ? {
+                            maxWidth: 260,
+                            width: "34%",
+                          }
+                        : {}),
+                    }}
+                  >
+                    <TableSortLabel
+                      active={orderBy === column.id}
+                      direction={orderBy === column.id ? order : "asc"}
+                      onClick={() => onOrderChange(column.id)}
+                    >
+                      {column.label}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
                 <TableCell sx={{ fontWeight: 700, width: 140 }}>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -166,7 +203,17 @@ export default function IssuesListSection({
                   }}
                 >
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell sx={{ fontWeight: 600 }}>{issue.title}</TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: 600,
+                      maxWidth: 260,
+                      overflowWrap: "anywhere",
+                      whiteSpace: "normal",
+                      width: "34%",
+                    }}
+                  >
+                    {issue.title}
+                  </TableCell>
                   <TableCell sx={{ color: "text.secondary" }}>
                     {issue.createdByName ?? "Unknown"}
                   </TableCell>

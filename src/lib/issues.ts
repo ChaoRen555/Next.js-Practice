@@ -11,12 +11,38 @@ export type IssueItem = {
 };
 
 export const issueStatuses = ["OPEN", "IN_PROGRESS", "CLOSED"] as const;
+export const issueOrderByFields = [
+  "id",
+  "title",
+  "createdByName",
+  "status",
+  "createdAt",
+] as const;
+export const issueOrderDirections = ["asc", "desc"] as const;
 
 export type IssueStatus = (typeof issueStatuses)[number];
 export type IssueStatusFilter = IssueStatus | "ALL";
+export type IssueOrderBy = (typeof issueOrderByFields)[number];
+export type IssueOrderDirection = (typeof issueOrderDirections)[number];
+
+export type IssuesListParams = {
+  status: IssueStatus | null;
+  orderBy: IssueOrderBy;
+  order: IssueOrderDirection;
+};
 
 export const isIssueStatus = (status: string): status is IssueStatus => {
   return issueStatuses.some((issueStatus) => issueStatus === status);
+};
+
+export const isIssueOrderBy = (orderBy: string): orderBy is IssueOrderBy => {
+  return issueOrderByFields.some((field) => field === orderBy);
+};
+
+export const isIssueOrderDirection = (
+  order: string,
+): order is IssueOrderDirection => {
+  return issueOrderDirections.some((direction) => direction === order);
 };
 
 export type FieldErrors = {
@@ -35,8 +61,8 @@ export const initialIssueFormData: IssueFormData = {
 };
 
 export const issuesQueryKey = ["issues"] as const;
-export const issuesListQueryKey = (status: IssueStatus | null) => {
-  return [...issuesQueryKey, { status }] as const;
+export const issuesListQueryKey = (params: IssuesListParams) => {
+  return [...issuesQueryKey, params] as const;
 };
 export const issueQueryKey = (issueId: number) => ["issues", issueId] as const;
 
@@ -56,12 +82,19 @@ export const serializeIssue = (issue: IssueWithCreator): IssueItem => {
   };
 };
 
-export const fetchIssues = async (status: IssueStatus | null) => {
+export const fetchIssues = async ({
+  status,
+  orderBy,
+  order,
+}: IssuesListParams) => {
   const searchParams = new URLSearchParams();
 
   if (status) {
     searchParams.set("status", status);
   }
+
+  searchParams.set("orderBy", orderBy);
+  searchParams.set("order", order);
 
   const queryString = searchParams.toString();
   const response = await fetch(`/api/issues${queryString ? `?${queryString}` : ""}`, {

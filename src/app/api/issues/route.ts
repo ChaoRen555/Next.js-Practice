@@ -1,9 +1,37 @@
+import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
-import { isIssueStatus, serializeIssue } from "@/lib/issues";
+import {
+  isIssueOrderBy,
+  isIssueOrderDirection,
+  isIssueStatus,
+  serializeIssue,
+  type IssueOrderBy,
+  type IssueOrderDirection,
+} from "@/lib/issues";
 import { prisma } from "@/lib/prisma";
 import { createIssueSchema } from "@/lib/validationSchemas";
+
+const defaultOrderBy: IssueOrderBy = "createdAt";
+const defaultOrder: IssueOrderDirection = "desc";
+
+const getIssueOrderBy = (
+  orderBy: IssueOrderBy,
+  order: IssueOrderDirection,
+): Prisma.IssueOrderByWithRelationInput => {
+  if (orderBy === "createdByName") {
+    return {
+      creator: {
+        name: order,
+      },
+    };
+  }
+
+  return {
+    [orderBy]: order,
+  };
+};
 
 export async function GET(request: Request) {
   const session = await auth();
@@ -17,10 +45,26 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");
+  const orderByParam = searchParams.get("orderBy") ?? defaultOrderBy;
+  const orderParam = searchParams.get("order") ?? defaultOrder;
 
   if (status !== null && !isIssueStatus(status)) {
     return NextResponse.json(
       { error: "Invalid issue status" },
+      { status: 400 },
+    );
+  }
+
+  if (!isIssueOrderBy(orderByParam)) {
+    return NextResponse.json(
+      { error: "Invalid issue order field" },
+      { status: 400 },
+    );
+  }
+
+  if (!isIssueOrderDirection(orderParam)) {
+    return NextResponse.json(
+      { error: "Invalid issue order direction" },
       { status: 400 },
     );
   }
@@ -39,9 +83,7 @@ export async function GET(request: Request) {
           },
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: getIssueOrderBy(orderByParam, orderParam),
     });
 
     return NextResponse.json(issues.map(serializeIssue));

@@ -4,15 +4,17 @@ import remarkGfm from "remark-gfm";
 
 import type { IssueItem } from "@/lib/issues";
 
-import { formatDateTime, formatStatus, getStatusChipSx } from "./issue-formatters";
+import {
+  formatDateTime,
+  formatStatus,
+  getStatusChipSx,
+} from "./issue-formatters";
 
 type IssueDetailContentProps = {
   issue: IssueItem;
 };
 
-export default function IssueDetailContent({
-  issue,
-}: IssueDetailContentProps) {
+export default function IssueDetailContent({ issue }: IssueDetailContentProps) {
   return (
     <Stack spacing={2.5} sx={{ minWidth: 0 }}>
       <Stack spacing={1.5}>
@@ -49,9 +51,6 @@ export default function IssueDetailContent({
       </Stack>
 
       <Box>
-        <Typography variant="subtitle2" color="text.secondary">
-          Description
-        </Typography>
         <Box
           sx={{
             mt: 1,
@@ -112,7 +111,7 @@ export default function IssueDetailContent({
               py: 0.25,
               borderRadius: 1,
               backgroundColor: "rgba(109, 134, 125, 0.12)",
-              fontFamily: "\"SFMono-Regular\", Consolas, monospace",
+              fontFamily: '"SFMono-Regular", Consolas, monospace',
               fontSize: "0.92em",
             },
             "& pre": {
