@@ -14,10 +14,12 @@ import {
   fetchIssue,
   issueQueryKey,
   fetchIssues,
+  issuesListQueryKey,
   issuesQueryKey,
   updateIssue,
   type IssueFormData,
   type IssueItem,
+  type IssueStatus,
 } from "@/lib/issues";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
@@ -43,10 +45,10 @@ type UseIssueFormOptions = {
   defaultValues: DefaultValues<IssueFormData>;
 };
 
-export const useIssuesQuery = () => {
+export const useIssuesQuery = (status: IssueStatus | null) => {
   return useQuery({
-    queryKey: issuesQueryKey,
-    queryFn: fetchIssues,
+    queryKey: issuesListQueryKey(status),
+    queryFn: () => fetchIssues(status),
   });
 };
 
@@ -132,10 +134,6 @@ export const useCreateIssueMutation = ({ onSuccess }: CreateIssueMutationOptions
   return useMutation({
     mutationFn: (formData: IssueFormData) => createIssue(formData),
     onSuccess: async (newIssue) => {
-      queryClient.setQueryData<IssueItem[]>(issuesQueryKey, (current = []) => {
-        return [newIssue, ...current];
-      });
-
       onSuccess(newIssue);
       await queryClient.invalidateQueries({ queryKey: issuesQueryKey });
     },
@@ -154,11 +152,6 @@ export const useUpdateIssueMutation = ({ onSuccess }: UpdateIssueMutationOptions
       formData: IssueFormData;
     }) => updateIssue(issueId, formData),
     onSuccess: async (updatedIssue) => {
-      queryClient.setQueryData<IssueItem[]>(issuesQueryKey, (current = []) => {
-        return current.map((issue) => {
-          return issue.id === updatedIssue.id ? updatedIssue : issue;
-        });
-      });
       queryClient.setQueryData<IssueItem>(
         issueQueryKey(updatedIssue.id),
         updatedIssue,
@@ -184,10 +177,6 @@ export const useDeleteIssueMutation = ({
   return useMutation({
     mutationFn: (issueId: number) => deleteIssue(issueId),
     onSuccess: async (_, deletedIssueId) => {
-      queryClient.setQueryData<IssueItem[]>(issuesQueryKey, (current = []) => {
-        return current.filter((issue) => issue.id !== deletedIssueId);
-      });
-
       onSuccess(deletedIssueId);
       await queryClient.invalidateQueries({ queryKey: issuesQueryKey });
     },

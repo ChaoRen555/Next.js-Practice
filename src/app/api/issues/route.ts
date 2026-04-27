@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
-import { serializeIssue } from "@/lib/issues";
+import { isIssueStatus, serializeIssue } from "@/lib/issues";
 import { prisma } from "@/lib/prisma";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await auth();
 
   if (!session?.user) {
@@ -15,8 +15,23 @@ export async function GET() {
     );
   }
 
+  const { searchParams } = new URL(request.url);
+  const status = searchParams.get("status");
+
+  if (status !== null && !isIssueStatus(status)) {
+    return NextResponse.json(
+      { error: "Invalid issue status" },
+      { status: 400 },
+    );
+  }
+
   try {
     const issues = await prisma.issue.findMany({
+      where: status
+        ? {
+            status,
+          }
+        : undefined,
       include: {
         creator: {
           select: {

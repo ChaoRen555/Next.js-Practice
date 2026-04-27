@@ -1,23 +1,34 @@
 "use client";
 
 import { Container, Stack } from "@mui/material";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { useToaster } from "@/components/toaster-provider";
-import type { IssueItem } from "@/lib/issues";
+import {
+  isIssueStatus,
+  type IssueItem,
+  type IssueStatus,
+  type IssueStatusFilter,
+} from "@/lib/issues";
 import IssueDeleteDialog from "./IssueDeleteDialog";
 import IssuesListSection from "./IssuesListSection";
 import { useDeleteIssueMutation, useIssuesQuery } from "./hooks";
 
 export default function IssuesClient() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { showToast } = useToaster();
   const [issueToDelete, setIssueToDelete] = useState<IssueItem | null>(null);
   const [deleteError, setDeleteError] = useState("");
 
-  const { data: issues = [], isLoading, error } = useIssuesQuery();
+  const statusParam = searchParams.get("status");
+  const selectedStatus: IssueStatus | null =
+    statusParam && isIssueStatus(statusParam) ? statusParam : null;
+  const statusFilter: IssueStatusFilter = selectedStatus ?? "ALL";
+
+  const { data: issues = [], isLoading, error } = useIssuesQuery(selectedStatus);
 
   const deleteIssueMutation = useDeleteIssueMutation({
     onSuccess: () => {
@@ -58,15 +69,30 @@ export default function IssuesClient() {
   const loadError =
     error instanceof Error ? error.message : "Unable to load issues right now.";
 
+  const handleStatusFilterChange = (nextStatusFilter: IssueStatusFilter) => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (nextStatusFilter === "ALL") {
+      nextSearchParams.delete("status");
+    } else {
+      nextSearchParams.set("status", nextStatusFilter);
+    }
+
+    const queryString = nextSearchParams.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname);
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
       <Stack spacing={3}>
         <IssuesListSection
           issues={issues}
+          statusFilter={statusFilter}
           isLoading={isLoading}
           loadError={error ? loadError : null}
           deletingIssueId={deleteIssueMutation.isPending ? issueToDelete?.id ?? null : null}
           createIssueHref="/issues/new"
+          onStatusFilterChange={handleStatusFilterChange}
           onOpenIssue={(issueId) => {
             router.push(`/issues/${issueId}`);
           }}

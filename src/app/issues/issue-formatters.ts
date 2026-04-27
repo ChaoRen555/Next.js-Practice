@@ -31,6 +31,15 @@ export const getStatusChipSx = (
   };
 };
 
+export const getStatusTextSx = (
+  status: IssueItem["status"],
+): SxProps<Theme> => {
+  return {
+    color: statusColorMap[status],
+    fontWeight: 600,
+  };
+};
+
 export const formatDateTime = (value: string) => {
   return new Date(value).toLocaleString();
 };

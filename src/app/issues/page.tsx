@@ -1,7 +1,13 @@
+import { Suspense } from "react";
+
 import IssuesClient from "./IssuesClient";
 
 const IssuesPage = () => {
-  return <IssuesClient />;
+  return (
+    <Suspense>
+      <IssuesClient />
+    </Suspense>
+  );
 };
 
 export default IssuesPage;

@@ -1,5 +1,15 @@
 import { createTheme } from "@mui/material/styles";
 
+const fontFamily = [
+  "Inter",
+  "ui-sans-serif",
+  "system-ui",
+  "-apple-system",
+  "BlinkMacSystemFont",
+  '"Segoe UI"',
+  "sans-serif",
+].join(", ");
+
 export const appTheme = createTheme({
   palette: {
     mode: "light",
@@ -25,7 +35,10 @@ export const appTheme = createTheme({
     borderRadius: 20,
   },
   typography: {
-    fontFamily: 'Georgia, "Times New Roman", serif',
+    fontFamily,
+    allVariants: {
+      letterSpacing: 0,
+    },
     h4: {
       fontWeight: 600,
     },

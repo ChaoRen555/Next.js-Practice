@@ -4,10 +4,19 @@ export type IssueItem = {
   id: number;
   title: string;
   description: string;
-  status: "OPEN" | "CLOSED" | "IN_PROGRESS";
+  status: IssueStatus;
   createdAt: string;
   updatedAt: string;
   createdByName: string | null;
+};
+
+export const issueStatuses = ["OPEN", "IN_PROGRESS", "CLOSED"] as const;
+
+export type IssueStatus = (typeof issueStatuses)[number];
+export type IssueStatusFilter = IssueStatus | "ALL";
+
+export const isIssueStatus = (status: string): status is IssueStatus => {
+  return issueStatuses.some((issueStatus) => issueStatus === status);
 };
 
 export type FieldErrors = {
@@ -26,6 +35,9 @@ export const initialIssueFormData: IssueFormData = {
 };
 
 export const issuesQueryKey = ["issues"] as const;
+export const issuesListQueryKey = (status: IssueStatus | null) => {
+  return [...issuesQueryKey, { status }] as const;
+};
 export const issueQueryKey = (issueId: number) => ["issues", issueId] as const;
 
 type IssueWithCreator = Issue & {
@@ -44,8 +56,15 @@ export const serializeIssue = (issue: IssueWithCreator): IssueItem => {
   };
 };
 
-export const fetchIssues = async () => {
-  const response = await fetch("/api/issues", {
+export const fetchIssues = async (status: IssueStatus | null) => {
+  const searchParams = new URLSearchParams();
+
+  if (status) {
+    searchParams.set("status", status);
+  }
+
+  const queryString = searchParams.toString();
+  const response = await fetch(`/api/issues${queryString ? `?${queryString}` : ""}`, {
     cache: "no-store",
   });
 

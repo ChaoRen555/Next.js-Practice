@@ -4,7 +4,12 @@ import {
   Button,
   Chip,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
+  type SelectChangeEvent,
   Stack,
   Table,
   TableBody,
@@ -15,33 +20,48 @@ import {
   Typography,
 } from "@mui/material";
 
-import type { IssueItem } from "@/lib/issues";
+import {
+  issueStatuses,
+  type IssueItem,
+  type IssueStatusFilter,
+} from "@/lib/issues";
 
 import {
   formatDateTime,
   formatStatus,
   getStatusChipSx,
+  getStatusTextSx,
 } from "./issue-formatters";
 
 type IssuesListSectionProps = {
   issues: IssueItem[];
+  statusFilter: IssueStatusFilter;
   isLoading: boolean;
   loadError: string | null;
   deletingIssueId: number | null;
   createIssueHref: string;
+  onStatusFilterChange: (statusFilter: IssueStatusFilter) => void;
   onOpenIssue: (issueId: number) => void;
   onOpenDelete: (issueId: number) => void;
 };
 
 export default function IssuesListSection({
   issues,
+  statusFilter,
   isLoading,
   loadError,
   deletingIssueId,
   createIssueHref,
+  onStatusFilterChange,
   onOpenIssue,
   onOpenDelete,
 }: IssuesListSectionProps) {
+  const handleStatusFilterChange = (
+    event: SelectChangeEvent<IssueStatusFilter>,
+  ) => {
+    onStatusFilterChange(event.target.value as IssueStatusFilter);
+  };
+
   return (
     <Stack spacing={2}>
       <Box
@@ -50,14 +70,38 @@ export default function IssuesListSection({
           alignItems: "center",
           justifyContent: "space-between",
           gap: 2,
+          flexWrap: "wrap",
         }}
       >
         <Button href={createIssueHref} variant="contained">
           Create New Issue
         </Button>
-        <Typography color="text.secondary">
-          {issues.length} {issues.length === 1 ? "issue" : "issues"}
-        </Typography>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={1.5}
+          sx={{ alignItems: { xs: "stretch", sm: "center" } }}
+        >
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="issue-status-filter-label">Status</InputLabel>
+            <Select<IssueStatusFilter>
+              labelId="issue-status-filter-label"
+              id="issue-status-filter"
+              value={statusFilter}
+              label="Status"
+              onChange={handleStatusFilterChange}
+            >
+              <MenuItem value="ALL">All statuses</MenuItem>
+              {issueStatuses.map((status) => (
+                <MenuItem key={status} value={status} sx={getStatusTextSx(status)}>
+                  {formatStatus(status)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Typography color="text.secondary">
+            {issues.length} {issues.length === 1 ? "issue" : "issues"}
+          </Typography>
+        </Stack>
       </Box>
 
       {loadError ? <Alert severity="error">{loadError}</Alert> : null}
@@ -80,9 +124,13 @@ export default function IssuesListSection({
 
       {!isLoading && !loadError && issues.length === 0 ? (
         <Paper sx={{ p: 4 }}>
-          <Typography variant="h6">No issues yet</Typography>
+          <Typography variant="h6">
+            {statusFilter === "ALL" ? "No issues yet" : "No matching issues"}
+          </Typography>
           <Typography color="text.secondary" sx={{ mt: 1 }}>
-            Click &quot;Create New Issue&quot; to add the first one.
+            {statusFilter === "ALL"
+              ? "Click \"Create New Issue\" to add the first one."
+              : `No issues match the ${formatStatus(statusFilter)} status.`}
           </Typography>
         </Paper>
       ) : null}
