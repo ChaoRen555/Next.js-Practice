@@ -6,7 +6,7 @@ This repository is a Next.js 16 App Router project using TypeScript, Tailwind CS
 
 Key directories:
 
-- `src/app/`: route entries, layouts, server actions, API routes, and route-local components. Current routes include the homepage, login page, issues list, issue detail, issue edit, issue creation, and issues APIs.
+- `src/app/`: route entries, layouts, server actions, API routes, and route-local components. Current routes include the homepage, dashboard, login page, issues list, issue detail, issue edit, issue creation, auth API, and issues APIs.
 - `src/app/issues/`: issues feature UI, feature-level hooks, Markdown editor integration, and page-local helpers.
 - `src/components/`: shared providers and reusable UI such as `app-theme-provider.tsx` and `query-provider.tsx`.
 - `src/lib/`: shared helpers and infrastructure such as `prisma.ts`, `issues.ts`, validation schemas, and general utilities.
