@@ -1,6 +1,8 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
+import { auth } from "@/auth";
 import { serializeIssue } from "@/lib/issues";
+import { canManageIssue } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import EditIssueClient from "./EditIssueClient";
 
@@ -13,6 +15,7 @@ type EditIssuePageProps = {
 const EditIssuePage = async ({
   params,
 }: EditIssuePageProps) => {
+  const session = await auth();
   const { id } = await params;
   const issueId = Number.parseInt(id, 10);
 
@@ -24,6 +27,7 @@ const EditIssuePage = async ({
     include: {
       creator: {
         select: {
+          id: true,
           name: true,
         },
       },
@@ -37,7 +41,11 @@ const EditIssuePage = async ({
     notFound();
   }
 
-  return <EditIssueClient issue={serializeIssue(issue)} />;
+  if (!session?.user || !canManageIssue(session.user, issue)) {
+    redirect(`/issues/${issueId}`);
+  }
+
+  return <EditIssueClient issue={serializeIssue(issue, session.user)} />;
 };
 
 export default EditIssuePage;

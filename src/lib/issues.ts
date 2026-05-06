@@ -1,4 +1,5 @@
 import type { Issue, User } from "@prisma/client";
+import { canManageIssue, type PermissionUser } from "@/lib/permissions";
 
 export type IssueItem = {
   id: number;
@@ -8,6 +9,8 @@ export type IssueItem = {
   createdAt: string;
   updatedAt: string;
   createdByName: string | null;
+  canEdit: boolean;
+  canDelete: boolean;
 };
 
 export const issueStatuses = ["OPEN", "IN_PROGRESS", "CLOSED"] as const;
@@ -77,10 +80,15 @@ export const issuesListQueryKey = (params: IssuesListParams) => {
 export const issueQueryKey = (issueId: number) => ["issues", issueId] as const;
 
 type IssueWithCreator = Issue & {
-  creator: Pick<User, "name"> | null;
+  creator: Pick<User, "id" | "name"> | null;
 };
 
-export const serializeIssue = (issue: IssueWithCreator): IssueItem => {
+export const serializeIssue = (
+  issue: IssueWithCreator,
+  viewer?: PermissionUser | null,
+): IssueItem => {
+  const canManage = viewer ? canManageIssue(viewer, issue) : false;
+
   return {
     id: issue.id,
     title: issue.title,
@@ -89,6 +97,8 @@ export const serializeIssue = (issue: IssueWithCreator): IssueItem => {
     createdAt: issue.createdAt.toISOString(),
     updatedAt: issue.updatedAt.toISOString(),
     createdByName: issue.creator?.name ?? null,
+    canEdit: canManage,
+    canDelete: canManage,
   };
 };
 

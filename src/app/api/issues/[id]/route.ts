@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
 import { serializeIssue } from "@/lib/issues";
+import { canManageIssue } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
@@ -26,6 +27,12 @@ const unauthorizedResponse = () =>
   NextResponse.json(
     { error: "Unauthorized" },
     { status: 401 },
+  );
+
+const forbiddenResponse = () =>
+  NextResponse.json(
+    { error: "Forbidden" },
+    { status: 403 },
   );
 
 export async function DELETE(
@@ -54,6 +61,7 @@ export async function DELETE(
       },
       select: {
         id: true,
+        creatorId: true,
       },
     });
 
@@ -62,6 +70,10 @@ export async function DELETE(
         { error: "Issue not found" },
         { status: 404 },
       );
+    }
+
+    if (!canManageIssue(session.user, existingIssue)) {
+      return forbiddenResponse();
     }
 
     await prisma.issue.delete({
@@ -103,6 +115,7 @@ export async function GET(
       include: {
         creator: {
           select: {
+            id: true,
             name: true,
           },
         },
@@ -119,7 +132,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(serializeIssue(issue));
+    return NextResponse.json(serializeIssue(issue, session.user));
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch issue" },
@@ -177,6 +190,7 @@ export async function PATCH(
       },
       select: {
         id: true,
+        creatorId: true,
       },
     });
 
@@ -185,6 +199,10 @@ export async function PATCH(
         { error: "Issue not found" },
         { status: 404 },
       );
+    }
+
+    if (!canManageIssue(session.user, existingIssue)) {
+      return forbiddenResponse();
     }
 
     const issue = await prisma.issue.update({
@@ -198,13 +216,14 @@ export async function PATCH(
       include: {
         creator: {
           select: {
+            id: true,
             name: true,
           },
         },
       },
     });
 
-    return NextResponse.json(serializeIssue(issue));
+    return NextResponse.json(serializeIssue(issue, session.user));
   } catch {
     return NextResponse.json(
       { error: "Failed to update issue" },

@@ -33,6 +33,9 @@ pnpm-debug.log*
 .vercel
 .idea
 
+# local learning notes
+CODEBASE_MIND_MAP_ZH.md
+
 # keys and secrets
 *.pem
 *.key

@@ -84,6 +84,8 @@ export default function IssuesListSection({
   onOpenIssue,
   onOpenDelete,
 }: IssuesListSectionProps) {
+  const hasIssueActions = issues.some((issue) => issue.canDelete);
+
   const handleStatusFilterChange = (
     event: SelectChangeEvent<IssueStatusFilter>,
   ) => {
@@ -196,7 +198,9 @@ export default function IssuesListSection({
                       </TableSortLabel>
                     </TableCell>
                   ))}
-                  <TableCell sx={{ fontWeight: 700, width: 140 }}>Actions</TableCell>
+                  {hasIssueActions ? (
+                    <TableCell sx={{ fontWeight: 700, width: 140 }}>Actions</TableCell>
+                  ) : null}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -237,20 +241,24 @@ export default function IssuesListSection({
                     <TableCell sx={{ color: "text.secondary" }}>
                       {formatDateTime(issue.createdAt)}
                     </TableCell>
-                    <TableCell
-                      onClick={(event) => event.stopPropagation()}
-                      sx={{ whiteSpace: "nowrap" }}
-                    >
-                      <Button
-                        color="error"
-                        variant="outlined"
-                        size="small"
-                        disabled={deletingIssueId !== null}
-                        onClick={() => onOpenDelete(issue.id)}
+                    {hasIssueActions ? (
+                      <TableCell
+                        onClick={(event) => event.stopPropagation()}
+                        sx={{ whiteSpace: "nowrap" }}
                       >
-                        {deletingIssueId === issue.id ? "Deleting..." : "Delete"}
-                      </Button>
-                    </TableCell>
+                        {issue.canDelete ? (
+                          <Button
+                            color="error"
+                            variant="outlined"
+                            size="small"
+                            disabled={deletingIssueId !== null}
+                            onClick={() => onOpenDelete(issue.id)}
+                          >
+                            {deletingIssueId === issue.id ? "Deleting..." : "Delete"}
+                          </Button>
+                        ) : null}
+                      </TableCell>
+                    ) : null}
                   </TableRow>
                 ))}
               </TableBody>

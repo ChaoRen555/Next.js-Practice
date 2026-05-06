@@ -38,6 +38,10 @@ const getErrorMessage = (error?: string) => {
     return "This email is already linked to a different sign-in method.";
   }
 
+  if (error === "CredentialsSignin") {
+    return "Email or password is incorrect.";
+  }
+
   return "Sign in failed. Please try again.";
 };
 
@@ -86,7 +90,71 @@ const LoginPage = async ({
         ) : null}
 
         <form
-          className="mt-8"
+          className="mt-8 space-y-4"
+          action={async (formData) => {
+            "use server";
+            await signIn("credentials", {
+              email: formData.get("email"),
+              password: formData.get("password"),
+              redirectTo: redirectTarget,
+            });
+          }}
+        >
+          <div>
+            <label
+              htmlFor="email"
+              className="mb-2 block text-sm font-semibold text-[#31403d]"
+            >
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              className="w-full rounded-2xl border border-[#d6e0db] bg-white/88 px-4 py-3 text-base text-[#273432] outline-none transition duration-300 placeholder:text-[#9aaba6] focus:border-[#8ea79f] focus:ring-4 focus:ring-[#d8e5dd]/70"
+              placeholder="user1@example.com"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="password"
+              className="mb-2 block text-sm font-semibold text-[#31403d]"
+            >
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              minLength={6}
+              className="w-full rounded-2xl border border-[#d6e0db] bg-white/88 px-4 py-3 text-base text-[#273432] outline-none transition duration-300 placeholder:text-[#9aaba6] focus:border-[#8ea79f] focus:ring-4 focus:ring-[#d8e5dd]/70"
+              placeholder="At least 6 characters"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="flex w-full cursor-pointer items-center justify-center rounded-full border border-[#6d867d] bg-[#6d867d] px-5 py-3.5 text-base font-semibold text-white shadow-[0_20px_45px_-30px_rgba(39,52,50,0.45)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#5f7971] hover:shadow-[0_28px_55px_-30px_rgba(39,52,50,0.5)] active:translate-y-0 active:shadow-[0_18px_36px_-26px_rgba(39,52,50,0.45)]"
+          >
+            Continue with email
+          </button>
+        </form>
+
+        <div className="my-7 flex items-center gap-3">
+          <span className="h-px flex-1 bg-[#d6e0db]" />
+          <span className="text-xs font-semibold uppercase text-[#7f918c]">
+            or
+          </span>
+          <span className="h-px flex-1 bg-[#d6e0db]" />
+        </div>
+
+        <form
+          className="mt-0"
           action={async () => {
             "use server";
             await signIn("google", {

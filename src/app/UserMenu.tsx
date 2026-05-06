@@ -1,5 +1,6 @@
 "use client";
 
+import type { UserRole } from "@prisma/client";
 import { useState, type MouseEvent } from "react";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -12,6 +13,7 @@ type UserMenuProps = {
   email?: string | null;
   image?: string | null;
   name?: string | null;
+  role?: UserRole;
 };
 
 const getAvatarFallback = (name?: string | null, email?: string | null) => {
@@ -20,7 +22,7 @@ const getAvatarFallback = (name?: string | null, email?: string | null) => {
   return value.charAt(0).toUpperCase();
 };
 
-const UserMenu = ({ name, email, image }: UserMenuProps) => {
+const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const menuOpen = Boolean(anchorEl);
@@ -128,6 +130,19 @@ const UserMenu = ({ name, email, image }: UserMenuProps) => {
               {email}
             </Typography>
           ) : null}
+
+          <Typography
+            sx={{
+              mt: 0.75,
+              color: "#6d867d",
+              fontSize: "0.78rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            }}
+          >
+            {role ?? "USER"}
+          </Typography>
         </Box>
 
         <Box sx={{ px: 1.25, pb: 1.25 }}>

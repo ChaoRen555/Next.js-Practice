@@ -6,3 +6,10 @@ export const createIssueSchema = z.object({
 });
 
 export type CreateIssueInput = z.infer<typeof createIssueSchema>;
+
+export const credentialsLoginSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Email must be valid"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export type CredentialsLoginInput = z.infer<typeof credentialsLoginSchema>;

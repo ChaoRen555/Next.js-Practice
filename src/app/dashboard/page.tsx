@@ -11,6 +11,7 @@ export default async function HomePage() {
     include: {
       creator: {
         select: {
+          id: true,
           name: true,
         },
       },
@@ -20,7 +21,7 @@ export default async function HomePage() {
     },
   });
 
-  const serializedIssues = issues.map(serializeIssue);
+  const serializedIssues = issues.map((issue) => serializeIssue(issue));
   const totalIssues = serializedIssues.length;
   const recentActivity = serializedIssues.slice(0, 5);
 

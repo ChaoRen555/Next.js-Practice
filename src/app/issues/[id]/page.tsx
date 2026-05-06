@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { auth } from "@/auth";
 import { serializeIssue } from "@/lib/issues";
 import { prisma } from "@/lib/prisma";
 import IssueDetailClient from "./IssueDetailClient";
@@ -13,6 +14,7 @@ type IssueDetailPageProps = {
 const IssueDetailPage = async ({
   params,
 }: IssueDetailPageProps) => {
+  const session = await auth();
   const { id } = await params;
   const issueId = Number.parseInt(id, 10);
 
@@ -24,6 +26,7 @@ const IssueDetailPage = async ({
     include: {
       creator: {
         select: {
+          id: true,
           name: true,
         },
       },
@@ -37,7 +40,7 @@ const IssueDetailPage = async ({
     notFound();
   }
 
-  return <IssueDetailClient issue={serializeIssue(issue)} />;
+  return <IssueDetailClient issue={serializeIssue(issue, session?.user)} />;
 };
 
 export default IssueDetailPage;

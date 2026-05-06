@@ -49,6 +49,7 @@ export const useIssuesQuery = (params: IssuesListParams) => {
   return useQuery({
     queryKey: issuesListQueryKey(params),
     queryFn: () => fetchIssues(params),
+    refetchOnMount: "always",
   });
 };
 
@@ -125,6 +126,7 @@ export const useIssueQuery = (issueId: number) => {
     queryKey: issueQueryKey(issueId),
     queryFn: () => fetchIssue(issueId),
     enabled: Number.isInteger(issueId) && issueId > 0,
+    refetchOnMount: "always",
   });
 };
 

@@ -95,6 +95,7 @@ export async function GET(request: Request) {
       include: {
         creator: {
           select: {
+            id: true,
             name: true,
           },
         },
@@ -105,7 +106,7 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json({
-      issues: issues.map(serializeIssue),
+      issues: issues.map((issue) => serializeIssue(issue, session.user)),
       total,
       page: clampedPage,
       pageSize: issuePageSize,
@@ -167,13 +168,14 @@ export async function POST(request: Request) {
       include: {
         creator: {
           select: {
+            id: true,
             name: true,
           },
         },
       },
     });
 
-    return NextResponse.json(serializeIssue(issue), { status: 201 });
+    return NextResponse.json(serializeIssue(issue, session.user), { status: 201 });
   } catch {
     return NextResponse.json(
       { error: "Failed to create issue" },
