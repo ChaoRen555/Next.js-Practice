@@ -1,5 +1,9 @@
 import type { Issue, User } from "@prisma/client";
-import { canManageIssue, type PermissionUser } from "@/lib/permissions";
+import {
+  canManageIssue,
+  canUpdateIssueStatus,
+  type PermissionUser,
+} from "@/lib/permissions";
 
 export type IssueItem = {
   id: number;
@@ -11,6 +15,7 @@ export type IssueItem = {
   createdByName: string | null;
   canEdit: boolean;
   canDelete: boolean;
+  canUpdateStatus: boolean;
 };
 
 export const issueStatuses = ["OPEN", "IN_PROGRESS", "CLOSED"] as const;
@@ -88,6 +93,7 @@ export const serializeIssue = (
   viewer?: PermissionUser | null,
 ): IssueItem => {
   const canManage = viewer ? canManageIssue(viewer, issue) : false;
+  const canUpdateStatus = viewer ? canUpdateIssueStatus(viewer) : false;
 
   return {
     id: issue.id,
@@ -99,6 +105,7 @@ export const serializeIssue = (
     createdByName: issue.creator?.name ?? null,
     canEdit: canManage,
     canDelete: canManage,
+    canUpdateStatus,
   };
 };
 
@@ -215,6 +222,33 @@ export const updateIssue = async (issueId: number, formData: IssueFormData) => {
     }
 
     throw error;
+  }
+
+  return data as IssueItem;
+};
+
+export const updateIssueStatus = async (
+  issueId: number,
+  status: IssueStatus,
+) => {
+  const response = await fetch(`/api/issues/${issueId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  const data = (await response.json()) as
+    | IssueItem
+    | {
+        error?: string;
+      };
+
+  if (!response.ok) {
+    throw new Error(
+      ("error" in data && data.error) || "Unable to update issue status.",
+    );
   }
 
   return data as IssueItem;

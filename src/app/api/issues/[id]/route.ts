@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
 import { serializeIssue } from "@/lib/issues";
-import { canManageIssue } from "@/lib/permissions";
+import { canManageIssue, canUpdateIssueStatus } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
-import { createIssueSchema } from "@/lib/validationSchemas";
+import {
+  createIssueSchema,
+  updateIssueStatusSchema,
+} from "@/lib/validationSchemas";
 
 type RouteContext = {
   params: Promise<{
@@ -169,6 +172,56 @@ export async function PATCH(
       { error: "Invalid JSON body" },
       { status: 400 },
     );
+  }
+
+  const statusValidation = updateIssueStatusSchema.safeParse(body);
+
+  if (statusValidation.success) {
+    if (!canUpdateIssueStatus(session.user)) {
+      return forbiddenResponse();
+    }
+
+    try {
+      const existingIssue = await prisma.issue.findUnique({
+        where: {
+          id: issueId,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!existingIssue) {
+        return NextResponse.json(
+          { error: "Issue not found" },
+          { status: 404 },
+        );
+      }
+
+      const issue = await prisma.issue.update({
+        where: {
+          id: issueId,
+        },
+        data: {
+          status: statusValidation.data.status,
+        },
+        include: {
+          creator: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      return NextResponse.json(serializeIssue(issue, session.user));
+    } catch {
+      return NextResponse.json(
+        { error: "Failed to update issue status" },
+        { status: 500 },
+      );
+    }
   }
 
   const validation = createIssueSchema.safeParse(body);

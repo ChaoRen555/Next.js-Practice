@@ -17,3 +17,5 @@ export const canManageIssue = (
 ) => {
   return isAdmin(user) || issue.creatorId === user.id;
 };
+
+export const canUpdateIssueStatus = (user: PermissionUser) => isAdmin(user);

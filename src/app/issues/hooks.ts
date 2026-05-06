@@ -17,8 +17,10 @@ import {
   issuesListQueryKey,
   issuesQueryKey,
   updateIssue,
+  updateIssueStatus,
   type IssueFormData,
   type IssueItem,
+  type IssueStatus,
   type IssuesListParams,
 } from "@/lib/issues";
 import { createIssueSchema } from "@/lib/validationSchemas";
@@ -34,6 +36,11 @@ type DeleteIssueMutationOptions = {
 
 type UpdateIssueMutationOptions = {
   onSuccess: (updatedIssue: IssueItem) => void;
+};
+
+type UpdateIssueStatusMutationOptions = {
+  onSuccess: (updatedIssue: IssueItem) => void;
+  onError: (message: string) => void;
 };
 
 type IssueMutationError = Error & {
@@ -166,6 +173,41 @@ export const useUpdateIssueMutation = ({ onSuccess }: UpdateIssueMutationOptions
           queryKey: issueQueryKey(updatedIssue.id),
         }),
       ]);
+    },
+  });
+};
+
+export const useUpdateIssueStatusMutation = ({
+  onSuccess,
+  onError,
+}: UpdateIssueStatusMutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      issueId,
+      status,
+    }: {
+      issueId: number;
+      status: IssueStatus;
+    }) => updateIssueStatus(issueId, status),
+    onSuccess: async (updatedIssue) => {
+      queryClient.setQueryData<IssueItem>(
+        issueQueryKey(updatedIssue.id),
+        updatedIssue,
+      );
+
+      onSuccess(updatedIssue);
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: issuesQueryKey }),
+        queryClient.invalidateQueries({
+          queryKey: issueQueryKey(updatedIssue.id),
+        }),
+      ]);
+    },
+    onError: (mutationError) => {
+      const statusUpdateError = mutationError as Error;
+      onError(statusUpdateError.message || "Unable to update issue status.");
     },
   });
 };
