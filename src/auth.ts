@@ -4,9 +4,12 @@ import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
-import { hashPassword, verifyPassword } from "@/lib/password";
+import { verifyPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
-import { credentialsLoginSchema } from "@/lib/validationSchemas";
+
+const getCredentialValue = (value: unknown) => {
+  return typeof value === "string" ? value.trim() : "";
+};
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -27,13 +30,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         },
       },
       async authorize(credentials) {
-        const validation = credentialsLoginSchema.safeParse(credentials);
+        const email = getCredentialValue(credentials.email).toLowerCase();
+        const password = getCredentialValue(credentials.password);
 
-        if (!validation.success) {
+        if (!email || !password) {
           return null;
         }
 
-        const { email, password } = validation.data;
         const existingUser = await prisma.user.findUnique({
           where: {
             email,
@@ -47,48 +50,24 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           },
         });
 
-        if (existingUser) {
-          if (!existingUser.passwordHash) {
-            return null;
-          }
-
-          const passwordValid = await verifyPassword(
-            password,
-            existingUser.passwordHash,
-          );
-
-          if (!passwordValid) {
-            return null;
-          }
-
-          return {
-            id: existingUser.id,
-            email: existingUser.email,
-            image: existingUser.image,
-            name: existingUser.name,
-          };
+        if (!existingUser?.passwordHash) {
+          return null;
         }
 
-        const passwordHash = await hashPassword(password);
-        const createdUser = await prisma.user.create({
-          data: {
-            email,
-            name: email.split("@")[0],
-            passwordHash,
-          },
-          select: {
-            id: true,
-            email: true,
-            image: true,
-            name: true,
-          },
-        });
+        const passwordValid = await verifyPassword(
+          password,
+          existingUser.passwordHash,
+        );
+
+        if (!passwordValid) {
+          return null;
+        }
 
         return {
-          id: createdUser.id,
-          email: createdUser.email,
-          image: createdUser.image,
-          name: createdUser.name,
+          id: existingUser.id,
+          email: existingUser.email,
+          image: existingUser.image,
+          name: existingUser.name,
         };
       },
     }),

@@ -78,7 +78,6 @@ export default function ToasterProvider({
             severity={activeToast.severity}
             variant="filled"
             sx={{ minWidth: 280 }}
-            onClose={handleClose}
           >
             {activeToast.message}
           </Alert>

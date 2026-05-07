@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth, signIn } from "@/auth";
+import LoginFieldError from "./LoginFieldError";
 
 type LoginPageProps = {
   searchParams: Promise<{
@@ -45,12 +46,22 @@ const getErrorMessage = (error?: string) => {
   return "Sign in failed. Please try again.";
 };
 
+const isCredentialsSignInError = (error: unknown) => {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "type" in error &&
+    error.type === "CredentialsSignin"
+  );
+};
+
 const LoginPage = async ({
   searchParams,
 }: LoginPageProps) => {
   const session = await auth();
   const { callbackUrl, error } = await searchParams;
   const redirectTarget = getRedirectTarget(callbackUrl);
+  const registerHref = `/register?callbackUrl=${encodeURIComponent(redirectTarget)}`;
 
   if (session?.user) {
     redirect(redirectTarget);
@@ -83,21 +94,38 @@ const LoginPage = async ({
           </p>
         </div>
 
-        {errorMessage ? (
-          <div className="mt-6 rounded-[18px] border border-[#d7b4aa] bg-[#fff6f3] px-4 py-3 text-sm text-[#8a4e3d]">
-            {errorMessage}
-          </div>
-        ) : null}
-
         <form
           className="mt-8 space-y-4"
           action={async (formData) => {
             "use server";
-            await signIn("credentials", {
-              email: formData.get("email"),
-              password: formData.get("password"),
-              redirectTo: redirectTarget,
-            });
+
+            try {
+              const signInUrl = await signIn("credentials", {
+                email: formData.get("email"),
+                password: formData.get("password"),
+                redirect: false,
+                redirectTo: redirectTarget,
+              });
+
+              const resultUrl = new URL(signInUrl, "http://localhost");
+              const signInError = resultUrl.searchParams.get("error");
+
+              if (signInError) {
+                redirect(
+                  `/login?error=${encodeURIComponent(signInError)}&callbackUrl=${encodeURIComponent(redirectTarget)}`,
+                );
+              }
+
+              redirect(getRedirectTarget(signInUrl));
+            } catch (error) {
+              if (!isCredentialsSignInError(error)) {
+                throw error;
+              }
+
+              redirect(
+                `/login?error=CredentialsSignin&callbackUrl=${encodeURIComponent(redirectTarget)}`,
+              );
+            }
           }}
         >
           <div>
@@ -114,8 +142,8 @@ const LoginPage = async ({
               autoComplete="email"
               required
               className="w-full rounded-2xl border border-[#d6e0db] bg-white/88 px-4 py-3 text-base text-[#273432] outline-none transition duration-300 placeholder:text-[#9aaba6] focus:border-[#8ea79f] focus:ring-4 focus:ring-[#d8e5dd]/70"
-              placeholder="user1@example.com"
             />
+            <LoginFieldError message={errorMessage} />
           </div>
 
           <div>
@@ -133,7 +161,6 @@ const LoginPage = async ({
               required
               minLength={6}
               className="w-full rounded-2xl border border-[#d6e0db] bg-white/88 px-4 py-3 text-base text-[#273432] outline-none transition duration-300 placeholder:text-[#9aaba6] focus:border-[#8ea79f] focus:ring-4 focus:ring-[#d8e5dd]/70"
-              placeholder="At least 6 characters"
             />
           </div>
 
@@ -217,9 +244,18 @@ const LoginPage = async ({
         </form>
 
         <div className="mt-6 text-center">
+          <p className="text-sm text-[#6f817d]">
+            Need an account?{" "}
+            <Link
+              href={registerHref}
+              className="font-semibold text-[#5f7971] transition duration-300 hover:text-[#41534f]"
+            >
+              Register
+            </Link>
+          </p>
           <Link
             href="/"
-            className="text-sm font-medium text-[#5f7971] transition duration-300 hover:text-[#41534f]"
+            className="mt-3 inline-block text-sm font-medium text-[#5f7971] transition duration-300 hover:text-[#41534f]"
           >
             Back to dashboard
           </Link>
