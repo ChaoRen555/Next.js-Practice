@@ -2,9 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth, signIn } from "@/auth";
+import PasswordInput from "@/components/password-input";
 import { hashPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
-import { credentialsLoginSchema } from "@/lib/validationSchemas";
+import { credentialsRegisterSchema } from "@/lib/validationSchemas";
 
 type RegisterPageProps = {
   searchParams: Promise<{
@@ -43,6 +44,10 @@ const getErrorMessage = (error?: string) => {
 
   if (error === "InvalidInput") {
     return "Use a valid email and a password with at least 6 characters.";
+  }
+
+  if (error === "PasswordMismatch") {
+    return "Passwords must match.";
   }
 
   return "Registration failed. Please try again.";
@@ -98,13 +103,21 @@ const RegisterPage = async ({
           action={async (formData) => {
             "use server";
 
-            const validation = credentialsLoginSchema.safeParse({
+            const validation = credentialsRegisterSchema.safeParse({
               email: formData.get("email"),
               password: formData.get("password"),
+              confirmPassword: formData.get("confirmPassword"),
             });
 
             if (!validation.success) {
-              redirect(`/register?error=InvalidInput&callbackUrl=${encodeURIComponent(redirectTarget)}`);
+              const passwordMismatch =
+                validation.error.issues.some((issue) =>
+                  issue.path.includes("confirmPassword"),
+                );
+
+              redirect(
+                `/register?error=${passwordMismatch ? "PasswordMismatch" : "InvalidInput"}&callbackUrl=${encodeURIComponent(redirectTarget)}`,
+              );
             }
 
             const { email, password } = validation.data;
@@ -161,15 +174,30 @@ const RegisterPage = async ({
             >
               Password
             </label>
-            <input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               autoComplete="new-password"
               required
               minLength={6}
-              className="w-full rounded-2xl border border-[#d6e0db] bg-white/88 px-4 py-3 text-base text-[#273432] outline-none transition duration-300 placeholder:text-[#9aaba6] focus:border-[#8ea79f] focus:ring-4 focus:ring-[#d8e5dd]/70"
               placeholder="At least 6 characters"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="mb-2 block text-sm font-semibold text-[#31403d]"
+            >
+              Confirm password
+            </label>
+            <PasswordInput
+              id="confirmPassword"
+              name="confirmPassword"
+              autoComplete="new-password"
+              required
+              minLength={6}
+              placeholder="Enter password again"
             />
           </div>
 

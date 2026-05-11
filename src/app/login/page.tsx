@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth, signIn } from "@/auth";
+import PasswordInput from "@/components/password-input";
 import LoginFieldError from "./LoginFieldError";
 
 type LoginPageProps = {
@@ -153,14 +154,12 @@ const LoginPage = async ({
             >
               Password
             </label>
-            <input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               autoComplete="current-password"
               required
               minLength={6}
-              className="w-full rounded-2xl border border-[#d6e0db] bg-white/88 px-4 py-3 text-base text-[#273432] outline-none transition duration-300 placeholder:text-[#9aaba6] focus:border-[#8ea79f] focus:ring-4 focus:ring-[#d8e5dd]/70"
             />
           </div>
 

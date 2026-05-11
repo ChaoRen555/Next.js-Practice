@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { UserRole } from "@prisma/client";
 import { useState, type MouseEvent } from "react";
 import Avatar from "@mui/material/Avatar";
@@ -146,10 +147,18 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
         </Box>
 
         <Box sx={{ px: 1.25, pb: 1.25 }}>
+          <Link
+            href="/profile"
+            onClick={handleClose}
+            className="mb-2 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-transparent bg-white/82 px-4 py-3 text-sm font-medium text-[#41534f] transition duration-300 hover:border-[#c9d6d0] hover:bg-white"
+          >
+            Edit profile
+          </Link>
+
           <Box component="form" action={logoutAction} onSubmit={handleClose}>
             <button
               type="submit"
-              className="flex w-full cursor-pointer items-center justify-center rounded-2xl border border-[#c9d6d0] bg-white/82 px-4 py-3 text-sm font-medium text-[#41534f] transition duration-300 hover:border-white hover:bg-white"
+              className="flex w-full cursor-pointer items-center justify-center rounded-2xl border border-transparent bg-white/82 px-4 py-3 text-sm font-medium text-[#41534f] transition duration-300 hover:border-[#c9d6d0] hover:bg-white"
             >
               Logout
             </button>
