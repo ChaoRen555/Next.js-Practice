@@ -46,7 +46,7 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
         aria-controls={menuOpen ? "user-menu" : undefined}
         aria-expanded={menuOpen ? "true" : undefined}
         aria-haspopup="menu"
-        className="flex cursor-pointer items-center gap-3 rounded-full border border-white/45 bg-white/35 px-2 py-1.5 pr-4 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] transition duration-300 hover:border-white/70 hover:bg-white/55"
+        className="flex cursor-pointer items-center gap-3 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-2 py-1.5 pr-4 text-left shadow-[inset_0_1px_0_var(--glass-highlight)] transition duration-300 hover:border-[var(--accent)] hover:bg-[var(--surface-hover)]"
       >
         <Avatar
           src={image ?? undefined}
@@ -54,19 +54,19 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
           sx={{
             width: 40,
             height: 40,
-            border: "1px solid rgba(255,255,255,0.7)",
-            bgcolor: "#6d867d",
-            color: "#ffffff",
+            border: "1px solid var(--line)",
+            bgcolor: "var(--accent-strong)",
+            color: "var(--on-accent)",
             fontFamily: "inherit",
             fontSize: "0.95rem",
             fontWeight: 700,
-            boxShadow: "0 12px 30px -18px rgba(95,121,113,0.55)",
+            boxShadow: "0 12px 30px -18px var(--nav-shadow)",
           }}
         >
           {avatarFallback}
         </Avatar>
         <span className="min-w-0">
-          <span className="block truncate text-sm font-semibold text-[#31403d]">
+          <span className="block truncate text-sm font-semibold text-[var(--text)]">
             {displayName}
           </span>
         </span>
@@ -91,11 +91,10 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
               mt: 1.5,
               minWidth: 220,
               overflow: "hidden",
-              border: "1px solid rgba(255,255,255,0.72)",
+              border: "1px solid var(--line)",
               borderRadius: "20px",
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(245,248,246,0.94) 100%)",
-              boxShadow: "0 28px 80px -36px rgba(95,121,113,0.42)",
+              background: "var(--surface-strong)",
+              boxShadow: "0 28px 80px -36px var(--nav-shadow)",
               backdropFilter: "blur(18px)",
             },
           },
@@ -109,7 +108,7 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
         <Box sx={{ px: 2.25, py: 1.75 }}>
           <Typography
             sx={{
-              color: "#31403d",
+              color: "var(--text)",
               fontSize: "0.98rem",
               fontWeight: 600,
               lineHeight: 1.4,
@@ -122,7 +121,7 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
             <Typography
               sx={{
                 mt: 0.75,
-                color: "#31403d",
+                color: "var(--text)",
                 fontSize: "0.95rem",
                 lineHeight: 1.5,
                 wordBreak: "break-word",
@@ -135,7 +134,7 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
           <Typography
             sx={{
               mt: 0.75,
-              color: "#6d867d",
+              color: "var(--accent-strong)",
               fontSize: "0.78rem",
               fontWeight: 700,
               letterSpacing: "0.08em",
@@ -150,7 +149,7 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
           <Link
             href="/profile"
             onClick={handleClose}
-            className="mb-2 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-transparent bg-white/82 px-4 py-3 text-sm font-medium text-[#41534f] transition duration-300 hover:border-[#c9d6d0] hover:bg-white"
+            className="mb-2 flex w-full cursor-pointer items-center justify-center rounded-2xl border border-transparent bg-[var(--surface-soft)] px-4 py-3 text-sm font-medium text-[var(--text)] transition duration-300 hover:border-[var(--line)] hover:bg-[var(--surface-hover)]"
           >
             Edit profile
           </Link>
@@ -158,7 +157,7 @@ const UserMenu = ({ name, email, image, role }: UserMenuProps) => {
           <Box component="form" action={logoutAction} onSubmit={handleClose}>
             <button
               type="submit"
-              className="flex w-full cursor-pointer items-center justify-center rounded-2xl border border-transparent bg-white/82 px-4 py-3 text-sm font-medium text-[#41534f] transition duration-300 hover:border-[#c9d6d0] hover:bg-white"
+              className="flex w-full cursor-pointer items-center justify-center rounded-2xl border border-transparent bg-[var(--surface-soft)] px-4 py-3 text-sm font-medium text-[var(--text)] transition duration-300 hover:border-[var(--line)] hover:bg-[var(--surface-hover)]"
             >
               Logout
             </button>

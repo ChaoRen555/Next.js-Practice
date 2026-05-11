@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import type { ThemeMode } from "@/stores/theme-store";
 
 const fontFamily = [
   "Inter",
@@ -10,26 +11,32 @@ const fontFamily = [
   "sans-serif",
 ].join(", ");
 
-export const appTheme = createTheme({
+export const createAppTheme = (mode: ThemeMode) => createTheme({
   palette: {
-    mode: "light",
+    mode,
     primary: {
-      main: "#6d867d",
-      dark: "#5f7971",
-      light: "#8ea79f",
+      main: mode === "light" ? "#6d867d" : "#9fb9af",
+      dark: mode === "light" ? "#5f7971" : "#7f9c91",
+      light: mode === "light" ? "#8ea79f" : "#c3d6cf",
     },
     secondary: {
-      main: "#8ea79f",
+      main: mode === "light" ? "#8ea79f" : "#b5c9c1",
     },
     background: {
-      default: "#eef3ef",
-      paper: "rgba(255, 255, 255, 0.76)",
+      default: mode === "light" ? "#eef3ef" : "#101816",
+      paper:
+        mode === "light"
+          ? "rgba(255, 255, 255, 0.76)"
+          : "rgba(23, 34, 31, 0.84)",
     },
     text: {
-      primary: "#273432",
-      secondary: "#6f817d",
+      primary: mode === "light" ? "#273432" : "#edf5f1",
+      secondary: mode === "light" ? "#6f817d" : "#afc2bb",
     },
-    divider: "rgba(93, 118, 112, 0.16)",
+    divider:
+      mode === "light"
+        ? "rgba(93, 118, 112, 0.16)"
+        : "rgba(190, 213, 204, 0.16)",
   },
   shape: {
     borderRadius: 20,
@@ -59,8 +66,14 @@ export const appTheme = createTheme({
         root: {
           backdropFilter: "blur(16px)",
           backgroundImage: "none",
-          border: "1px solid rgba(93, 118, 112, 0.16)",
-          boxShadow: "0 24px 70px -34px rgba(95, 121, 113, 0.25)",
+          border:
+            mode === "light"
+              ? "1px solid rgba(93, 118, 112, 0.16)"
+              : "1px solid rgba(190, 213, 204, 0.16)",
+          boxShadow:
+            mode === "light"
+              ? "0 24px 70px -34px rgba(95, 121, 113, 0.25)"
+              : "0 24px 70px -34px rgba(0, 0, 0, 0.52)",
         },
       },
     },
@@ -76,7 +89,10 @@ export const appTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          backgroundColor: "rgba(255, 255, 255, 0.72)",
+          backgroundColor:
+            mode === "light"
+              ? "rgba(255, 255, 255, 0.72)"
+              : "rgba(18, 28, 25, 0.72)",
         },
       },
     },
