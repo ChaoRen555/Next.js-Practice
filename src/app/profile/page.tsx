@@ -3,13 +3,13 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import PasswordInput from "@/components/password-input";
+import RouteToastMessage from "@/components/route-toast-message";
 import { hashPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
 import {
   updatePasswordSchema,
   updateProfileSchema,
 } from "@/lib/validationSchemas";
-import ProfileStatusMessage from "./ProfileStatusMessage";
 
 type ProfilePageProps = {
   searchParams: Promise<{
@@ -18,10 +18,9 @@ type ProfilePageProps = {
   }>;
 };
 
-type StatusTone = "success" | "error";
 type StatusMessage = {
-  tone: StatusTone;
   message: string;
+  severity: "success" | "error";
 };
 
 const getStatusMessage = (
@@ -30,44 +29,44 @@ const getStatusMessage = (
 ): StatusMessage | null => {
   if (updated === "profile") {
     return {
-      tone: "success",
       message: "Profile settings saved.",
+      severity: "success",
     };
   }
 
   if (updated === "password") {
     return {
-      tone: "success",
       message: "Password updated.",
+      severity: "success",
     };
   }
 
   if (error === "invalid-profile") {
     return {
-      tone: "error",
       message: "Use a name with 80 characters or fewer.",
+      severity: "error",
     };
   }
 
   if (error === "invalid-password") {
     return {
-      tone: "error",
       message: "Use a password between 6 and 128 characters.",
+      severity: "error",
     };
   }
 
   if (error === "password-mismatch") {
     return {
-      tone: "error",
       message: "Passwords must match.",
+      severity: "error",
     };
   }
 
   if (error === "password-unavailable") {
     return {
-      tone: "error",
       message:
         "Password changes are only available for email sign-in accounts.",
+      severity: "error",
     };
   }
 
@@ -87,7 +86,6 @@ const ProfilePage = async ({ searchParams }: ProfilePageProps) => {
     },
     select: {
       email: true,
-      image: true,
       name: true,
       passwordHash: true,
       role: true,
@@ -115,7 +113,7 @@ const ProfilePage = async ({ searchParams }: ProfilePageProps) => {
       />
 
       <div className="relative w-full max-w-2xl rounded-[32px] border border-white/65 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(247,250,248,0.68))] p-8 shadow-[0_32px_90px_-44px_rgba(95,121,113,0.42)] backdrop-blur-2xl sm:p-10">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#6d867d]">
               Account
@@ -123,10 +121,6 @@ const ProfilePage = async ({ searchParams }: ProfilePageProps) => {
             <h1 className="mt-2 text-3xl font-semibold text-[#273432] sm:text-[2rem]">
               Edit profile
             </h1>
-          </div>
-
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#6d867d,#8ea79f_58%,#d3ddd9)] text-lg font-semibold uppercase text-white shadow-[0_16px_32px_-18px_rgba(95,121,113,0.55)]">
-            {displayName.charAt(0).toUpperCase()}
           </div>
         </div>
 
@@ -143,7 +137,11 @@ const ProfilePage = async ({ searchParams }: ProfilePageProps) => {
         </div>
 
         {status ? (
-          <ProfileStatusMessage message={status.message} tone={status.tone} />
+          <RouteToastMessage
+            clearParams={["updated", "error"]}
+            message={status.message}
+            severity={status.severity}
+          />
         ) : null}
 
         <form
