@@ -3,6 +3,10 @@ import { redirect } from "next/navigation";
 
 import { auth, signIn } from "@/auth";
 import PasswordInput from "@/components/password-input";
+import {
+  getNotificationMessage,
+  getRouteNotificationKey,
+} from "@/lib/notifications";
 import { hashPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
 import { credentialsRegisterSchema } from "@/lib/validationSchemas";
@@ -33,26 +37,6 @@ const getRedirectTarget = (callbackUrl?: string) => {
   }
 };
 
-const getErrorMessage = (error?: string) => {
-  if (!error) {
-    return null;
-  }
-
-  if (error === "AccountExists") {
-    return "This email is already registered.";
-  }
-
-  if (error === "InvalidInput") {
-    return "Use a valid email and a password with at least 6 characters.";
-  }
-
-  if (error === "PasswordMismatch") {
-    return "Passwords must match.";
-  }
-
-  return "Registration failed. Please try again.";
-};
-
 const RegisterPage = async ({
   searchParams,
 }: RegisterPageProps) => {
@@ -65,7 +49,8 @@ const RegisterPage = async ({
     redirect(redirectTarget);
   }
 
-  const errorMessage = getErrorMessage(error);
+  const notificationKey = getRouteNotificationKey("register", { error });
+  const errorMessage = getNotificationMessage(notificationKey)?.message ?? null;
 
   return (
     <section className="relative mx-auto flex min-h-[calc(100vh-120px)] w-full max-w-6xl items-center justify-center overflow-hidden px-6 py-16 sm:px-8">

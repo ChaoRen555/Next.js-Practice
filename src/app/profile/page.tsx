@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import PasswordInput from "@/components/password-input";
 import RouteToastMessage from "@/components/route-toast-message";
+import { getRouteNotificationKey } from "@/lib/notifications";
 import { hashPassword } from "@/lib/password";
 import { prisma } from "@/lib/prisma";
 import {
@@ -16,61 +17,6 @@ type ProfilePageProps = {
     error?: string;
     updated?: string;
   }>;
-};
-
-type StatusMessage = {
-  message: string;
-  severity: "success" | "error";
-};
-
-const getStatusMessage = (
-  updated?: string,
-  error?: string,
-): StatusMessage | null => {
-  if (updated === "profile") {
-    return {
-      message: "Profile settings saved.",
-      severity: "success",
-    };
-  }
-
-  if (updated === "password") {
-    return {
-      message: "Password updated.",
-      severity: "success",
-    };
-  }
-
-  if (error === "invalid-profile") {
-    return {
-      message: "Use a name with 80 characters or fewer.",
-      severity: "error",
-    };
-  }
-
-  if (error === "invalid-password") {
-    return {
-      message: "Use a password between 6 and 128 characters.",
-      severity: "error",
-    };
-  }
-
-  if (error === "password-mismatch") {
-    return {
-      message: "Passwords must match.",
-      severity: "error",
-    };
-  }
-
-  if (error === "password-unavailable") {
-    return {
-      message:
-        "Password changes are only available for email sign-in accounts.",
-      severity: "error",
-    };
-  }
-
-  return null;
 };
 
 const ProfilePage = async ({ searchParams }: ProfilePageProps) => {
@@ -97,7 +43,10 @@ const ProfilePage = async ({ searchParams }: ProfilePageProps) => {
   }
 
   const { error, updated } = await searchParams;
-  const status = getStatusMessage(updated, error);
+  const notificationKey = getRouteNotificationKey("profile", {
+    error,
+    updated,
+  });
   const canChangePassword = Boolean(user.passwordHash);
   const displayName = user.name?.trim() || "Signed in";
 
@@ -136,11 +85,10 @@ const ProfilePage = async ({ searchParams }: ProfilePageProps) => {
           </p>
         </div>
 
-        {status ? (
+        {notificationKey ? (
           <RouteToastMessage
             clearParams={["updated", "error"]}
-            message={status.message}
-            severity={status.severity}
+            notificationKey={notificationKey}
           />
         ) : null}
 

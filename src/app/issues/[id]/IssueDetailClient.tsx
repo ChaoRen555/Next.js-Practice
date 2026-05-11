@@ -22,6 +22,7 @@ import {
   type IssueItem,
   type IssueStatus,
 } from "@/lib/issues";
+import { getNotification } from "@/lib/notifications";
 import IssueCommentsSection from "../IssueCommentsSection";
 import IssueDeleteDialog from "../IssueDeleteDialog";
 import IssueDetailContent from "../IssueDetailContent";
@@ -46,10 +47,7 @@ export default function IssueDetailClient({
     onSuccess: () => {
       setIsDeleteDialogOpen(false);
       setDeleteError("");
-      showToast({
-        message: "Issue deleted successfully.",
-        severity: "success",
-      });
+      showToast(getNotification("issues.delete.success"));
       router.push("/issues");
       router.refresh();
     },
@@ -66,10 +64,7 @@ export default function IssueDetailClient({
     onSuccess: (updatedIssue) => {
       setCurrentIssue(updatedIssue);
       setStatusError("");
-      showToast({
-        message: "Issue status updated successfully.",
-        severity: "success",
-      });
+      showToast(getNotification("issues.status.update.success"));
       router.refresh();
     },
     onError: (message) => {

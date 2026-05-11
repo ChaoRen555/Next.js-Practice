@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 
 import { useToaster } from "@/components/toaster-provider";
 import { initialIssueFormData } from "@/lib/issues";
+import { getNotification } from "@/lib/notifications";
 import { useCreateIssueMutation, useIssueForm } from "../hooks";
 import IssueForm from "../IssueForm";
 
@@ -31,10 +32,7 @@ export default function NewIssueClient() {
 
   const createIssueMutation = useCreateIssueMutation({
     onSuccess: () => {
-      showToast({
-        message: "Issue created successfully.",
-        severity: "success",
-      });
+      showToast(getNotification("issues.create.success"));
       router.push("/issues");
       router.refresh();
     },

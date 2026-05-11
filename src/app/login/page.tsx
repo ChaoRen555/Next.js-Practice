@@ -3,6 +3,10 @@ import { redirect } from "next/navigation";
 
 import { auth, signIn } from "@/auth";
 import PasswordInput from "@/components/password-input";
+import {
+  getNotificationMessage,
+  getRouteNotificationKey,
+} from "@/lib/notifications";
 import LoginFieldError from "./LoginFieldError";
 
 type LoginPageProps = {
@@ -31,22 +35,6 @@ const getRedirectTarget = (callbackUrl?: string) => {
   }
 };
 
-const getErrorMessage = (error?: string) => {
-  if (!error) {
-    return null;
-  }
-
-  if (error === "OAuthAccountNotLinked") {
-    return "This email is already linked to a different sign-in method.";
-  }
-
-  if (error === "CredentialsSignin") {
-    return "Email or password is incorrect.";
-  }
-
-  return "Sign in failed. Please try again.";
-};
-
 const isCredentialsSignInError = (error: unknown) => {
   return (
     typeof error === "object" &&
@@ -68,7 +56,8 @@ const LoginPage = async ({
     redirect(redirectTarget);
   }
 
-  const errorMessage = getErrorMessage(error);
+  const notificationKey = getRouteNotificationKey("login", { error });
+  const errorMessage = getNotificationMessage(notificationKey)?.message ?? null;
 
   return (
     <section className="relative mx-auto flex min-h-[calc(100vh-120px)] w-full max-w-6xl items-center justify-center overflow-hidden px-6 py-16 sm:px-8">

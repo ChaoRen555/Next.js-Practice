@@ -15,6 +15,7 @@ import {
   type IssueStatus,
   type IssueStatusFilter,
 } from "@/lib/issues";
+import { getNotification, getNotificationText } from "@/lib/notifications";
 import IssueDeleteDialog from "./IssueDeleteDialog";
 import IssuesListSection from "./IssuesListSection";
 import { useDeleteIssueMutation, useIssuesQuery } from "./hooks";
@@ -74,10 +75,7 @@ export default function IssuesClient() {
     onSuccess: () => {
       setIssueToDelete(null);
       setDeleteError("");
-      showToast({
-        message: "Issue deleted successfully.",
-        severity: "success",
-      });
+      showToast(getNotification("issues.delete.success"));
     },
     onError: (message) => {
       setDeleteError(message);
@@ -107,7 +105,9 @@ export default function IssuesClient() {
   };
 
   const loadError =
-    error instanceof Error ? error.message : "Unable to load issues right now.";
+    error instanceof Error
+      ? error.message
+      : getNotificationText("issues.load.error");
 
   const handleStatusFilterChange = (nextStatusFilter: IssueStatusFilter) => {
     const nextSearchParams = new URLSearchParams(searchParams.toString());

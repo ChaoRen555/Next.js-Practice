@@ -15,6 +15,7 @@ import { useToaster } from "@/components/toaster-provider";
 import {
   type IssueItem,
 } from "@/lib/issues";
+import { getNotification } from "@/lib/notifications";
 import { useIssueForm, useUpdateIssueMutation } from "../../hooks";
 import IssueForm from "../../IssueForm";
 
@@ -42,10 +43,11 @@ export default function EditIssueClient({
 
   const updateIssueMutation = useUpdateIssueMutation({
     onSuccess: (updatedIssue) => {
-      showToast({
-        message: `Issue #${updatedIssue.id} updated successfully.`,
-        severity: "success",
-      });
+      showToast(
+        getNotification("issues.update.success", {
+          issueId: updatedIssue.id,
+        }),
+      );
       router.push(`/issues/${updatedIssue.id}`);
       router.refresh();
     },

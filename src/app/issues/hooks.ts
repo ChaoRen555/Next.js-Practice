@@ -29,6 +29,7 @@ import {
   type IssueComment,
   type IssuesListParams,
 } from "@/lib/issues";
+import { getNotificationText } from "@/lib/notifications";
 import { createIssueSchema } from "@/lib/validationSchemas";
 
 type CreateIssueMutationOptions = {
@@ -121,7 +122,9 @@ export const useIssueForm = ({
         return;
       }
 
-      setSubmitError(errorWithMeta.message || "Unable to submit issue.");
+      setSubmitError(
+        errorWithMeta.message || getNotificationText("issues.submit.error"),
+      );
     }
   };
 
@@ -232,7 +235,10 @@ export const useUpdateIssueStatusMutation = ({
     },
     onError: (mutationError) => {
       const statusUpdateError = mutationError as Error;
-      onError(statusUpdateError.message || "Unable to update issue status.");
+      onError(
+        statusUpdateError.message ||
+          getNotificationText("issues.status.update.error"),
+      );
     },
   });
 };
@@ -251,7 +257,9 @@ export const useDeleteIssueMutation = ({
     },
     onError: (mutationError) => {
       const deleteIssueError = mutationError as Error;
-      onError(deleteIssueError.message || "Unable to delete issue.");
+      onError(
+        deleteIssueError.message || getNotificationText("issues.delete.error"),
+      );
     },
   });
 };
@@ -278,7 +286,10 @@ export const useCreateCommentMutation = ({
     },
     onError: (mutationError) => {
       const createCommentError = mutationError as Error;
-      onError(createCommentError.message || "Unable to add comment.");
+      onError(
+        createCommentError.message ||
+          getNotificationText("comments.create.error"),
+      );
     },
   });
 };
@@ -305,7 +316,10 @@ export const useDeleteCommentMutation = ({
     },
     onError: (mutationError) => {
       const deleteCommentError = mutationError as Error;
-      onError(deleteCommentError.message || "Unable to delete comment.");
+      onError(
+        deleteCommentError.message ||
+          getNotificationText("comments.delete.error"),
+      );
     },
   });
 };

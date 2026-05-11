@@ -5,6 +5,7 @@ import {
   canUpdateIssueStatus,
   type PermissionUser,
 } from "@/lib/permissions";
+import { getNotificationText } from "@/lib/notifications";
 
 export type IssueItem = {
   id: number;
@@ -172,7 +173,7 @@ export const fetchIssues = async ({
   });
 
   if (!response.ok) {
-    throw new Error("Unable to load issues right now.");
+    throw new Error(getNotificationText("issues.load.error"));
   }
 
   return (await response.json()) as IssuesListResponse;
@@ -196,7 +197,8 @@ export const createIssue = async (formData: IssueFormData) => {
 
   if (!response.ok) {
     const error = new Error(
-      ("error" in data && data.error) || "Unable to create issue.",
+      ("error" in data && data.error) ||
+        getNotificationText("issues.create.error"),
     ) as Error & {
       status?: number;
       fieldErrors?: FieldErrors;
@@ -226,7 +228,10 @@ export const fetchIssue = async (issueId: number) => {
       };
 
   if (!response.ok) {
-    throw new Error(("error" in data && data.error) || "Unable to load issue.");
+    throw new Error(
+      ("error" in data && data.error) ||
+        getNotificationText("issues.detail.load.error"),
+    );
   }
 
   return data as IssueItem;
@@ -250,7 +255,8 @@ export const updateIssue = async (issueId: number, formData: IssueFormData) => {
 
   if (!response.ok) {
     const error = new Error(
-      ("error" in data && data.error) || "Unable to update issue.",
+      ("error" in data && data.error) ||
+        getNotificationText("issues.update.error"),
     ) as Error & {
       status?: number;
       fieldErrors?: FieldErrors;
@@ -288,7 +294,8 @@ export const updateIssueStatus = async (
 
   if (!response.ok) {
     throw new Error(
-      ("error" in data && data.error) || "Unable to update issue status.",
+      ("error" in data && data.error) ||
+        getNotificationText("issues.status.update.error"),
     );
   }
 
@@ -303,7 +310,7 @@ export const deleteIssue = async (issueId: number) => {
   const data = (await response.json()) as { error?: string };
 
   if (!response.ok) {
-    throw new Error(data.error ?? "Unable to delete issue.");
+    throw new Error(data.error ?? getNotificationText("issues.delete.error"));
   }
 };
 
@@ -320,7 +327,8 @@ export const fetchIssueComments = async (issueId: number) => {
 
   if (!response.ok) {
     throw new Error(
-      ("error" in data && data.error) || "Unable to load comments.",
+      ("error" in data && data.error) ||
+        getNotificationText("comments.load.error"),
     );
   }
 
@@ -350,7 +358,8 @@ export const createIssueComment = async (
 
   if (!response.ok) {
     const error = new Error(
-      ("error" in data && data.error) || "Unable to add comment.",
+      ("error" in data && data.error) ||
+        getNotificationText("comments.create.error"),
     ) as Error & {
       status?: number;
       fieldErrors?: {
@@ -381,6 +390,6 @@ export const deleteIssueComment = async (
   const data = (await response.json()) as { error?: string };
 
   if (!response.ok) {
-    throw new Error(data.error ?? "Unable to delete comment.");
+    throw new Error(data.error ?? getNotificationText("comments.delete.error"));
   }
 };

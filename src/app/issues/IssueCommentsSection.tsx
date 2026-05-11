@@ -21,6 +21,7 @@ import remarkGfm from "remark-gfm";
 
 import { useToaster } from "@/components/toaster-provider";
 import type { IssueComment } from "@/lib/issues";
+import { getNotification, getNotificationText } from "@/lib/notifications";
 import {
   useCreateCommentMutation,
   useDeleteCommentMutation,
@@ -137,10 +138,7 @@ export default function IssueCommentsSection({
     onSuccess: () => {
       setCommentBody("");
       setSubmitError("");
-      showToast({
-        message: "Comment added successfully.",
-        severity: "success",
-      });
+      showToast(getNotification("comments.create.success"));
     },
     onError: (message) => {
       setSubmitError(message);
@@ -154,10 +152,7 @@ export default function IssueCommentsSection({
     onSuccess: () => {
       setCommentToDelete(null);
       setDeleteError("");
-      showToast({
-        message: "Comment deleted successfully.",
-        severity: "success",
-      });
+      showToast(getNotification("comments.delete.success"));
     },
     onError: (message) => {
       setDeleteError(message);
@@ -175,7 +170,7 @@ export default function IssueCommentsSection({
 
   const handleSubmit = async () => {
     if (!trimmedCommentBody) {
-      setSubmitError("Comment is required.");
+      setSubmitError(getNotificationText("comments.required.error"));
       return;
     }
 
@@ -255,7 +250,9 @@ export default function IssueCommentsSection({
         ) : null}
 
         {commentsQuery.isError ? (
-          <Alert severity="error">Unable to load comments right now.</Alert>
+          <Alert severity="error">
+            {getNotificationText("comments.load.error")}
+          </Alert>
         ) : null}
 
         {!commentsQuery.isLoading && !commentsQuery.isError && !comments.length ? (

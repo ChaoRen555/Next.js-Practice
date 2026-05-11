@@ -4,19 +4,19 @@ import { useEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { useToaster } from "@/components/toaster-provider";
-
-type RouteToastSeverity = "success" | "error" | "info" | "warning";
+import {
+  getNotificationMessage,
+  type NotificationKey,
+} from "@/lib/notifications";
 
 type RouteToastMessageProps = {
   clearParams: string[];
-  message: string;
-  severity?: RouteToastSeverity;
+  notificationKey: NotificationKey;
 };
 
 export default function RouteToastMessage({
   clearParams,
-  message,
-  severity = "info",
+  notificationKey,
 }: RouteToastMessageProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -30,10 +30,15 @@ export default function RouteToastMessage({
     }
 
     hasShownToast.current = true;
+    const notification = getNotificationMessage(notificationKey);
+
+    if (!notification) {
+      return;
+    }
 
     showToast({
-      message,
-      severity,
+      message: notification.message,
+      severity: notification.severity,
     });
 
     const nextSearchParams = new URLSearchParams(searchParams.toString());
@@ -44,7 +49,7 @@ export default function RouteToastMessage({
 
     const queryString = nextSearchParams.toString();
     router.replace(queryString ? `${pathname}?${queryString}` : pathname);
-  }, [clearParams, message, pathname, router, searchParams, severity, showToast]);
+  }, [clearParams, notificationKey, pathname, router, searchParams, showToast]);
 
   return null;
 }
