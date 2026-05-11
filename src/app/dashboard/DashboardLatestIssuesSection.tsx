@@ -44,15 +44,15 @@ export default function DashboardLatestIssuesSection({
             sx={{
               borderRadius: "24px",
               borderStyle: "dashed",
-              borderColor: "rgba(93,118,112,0.2)",
-              backgroundColor: "rgba(255,255,255,0.45)",
+              borderColor: "var(--line-strong)",
+              backgroundColor: "var(--surface-soft)",
               px: 3,
               py: 5,
               textAlign: "center",
             }}
           >
             <Typography
-              sx={{ fontSize: "1.125rem", fontWeight: 600, color: "#273432" }}
+              sx={{ fontSize: "1.125rem", fontWeight: 600, color: "var(--text)" }}
             >
               No issues yet
             </Typography>
@@ -61,7 +61,7 @@ export default function DashboardLatestIssuesSection({
                 mt: 1,
                 fontSize: "0.95rem",
                 lineHeight: 1.8,
-                color: "#6f817d",
+                color: "var(--muted)",
               }}
             >
               Create the first issue to populate this dashboard.
@@ -93,10 +93,10 @@ export default function DashboardLatestIssuesSection({
               sx={{
                 px: 2.5,
                 py: 1.5,
-                backgroundColor: "#6d867d",
-                boxShadow: "0 16px 35px -18px rgba(95,121,113,0.55)",
+                backgroundColor: "var(--accent-strong)",
+                boxShadow: "0 16px 35px -18px var(--nav-shadow)",
                 "&:hover": {
-                  backgroundColor: "#5f7971",
+                  backgroundColor: "var(--accent)",
                 },
               }}
             >
@@ -110,12 +110,12 @@ export default function DashboardLatestIssuesSection({
               sx={{
                 px: 2.5,
                 py: 1.5,
-                borderColor: "rgba(255,255,255,0.6)",
-                backgroundColor: "rgba(255,255,255,0.55)",
-                color: "#273432",
+                borderColor: "var(--line)",
+                backgroundColor: "var(--surface-soft)",
+                color: "var(--text)",
                 "&:hover": {
-                  borderColor: "rgba(255,255,255,0.8)",
-                  backgroundColor: "rgba(255,255,255,0.7)",
+                  borderColor: "var(--accent)",
+                  backgroundColor: "var(--surface-hover)",
                 },
               }}
             >

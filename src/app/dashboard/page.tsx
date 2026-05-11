@@ -61,7 +61,7 @@ export default async function HomePage() {
           height: 208,
           width: 208,
           borderRadius: "999px",
-          backgroundColor: "rgba(220, 232, 224, 0.6)",
+          backgroundColor: "var(--glow-left)",
           filter: "blur(48px)",
           pointerEvents: "none",
         }}
@@ -75,7 +75,7 @@ export default async function HomePage() {
           height: 176,
           width: 176,
           borderRadius: "999px",
-          backgroundColor: "rgba(217, 228, 234, 0.5)",
+          backgroundColor: "var(--glow-right)",
           filter: "blur(48px)",
           pointerEvents: "none",
         }}

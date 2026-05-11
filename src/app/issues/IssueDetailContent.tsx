@@ -98,8 +98,8 @@ export default function IssueDetailContent({ issue }: IssueDetailContentProps) {
               m: 0,
               px: 2,
               py: 1,
-              borderLeft: "4px solid rgba(109, 134, 125, 0.35)",
-              backgroundColor: "rgba(255, 255, 255, 0.52)",
+              borderLeft: "4px solid var(--markdown-quote-border)",
+              backgroundColor: "var(--surface-soft)",
               color: "text.secondary",
               borderRadius: 2,
               maxWidth: "100%",
@@ -110,7 +110,7 @@ export default function IssueDetailContent({ issue }: IssueDetailContentProps) {
               px: 0.75,
               py: 0.25,
               borderRadius: 1,
-              backgroundColor: "rgba(109, 134, 125, 0.12)",
+              backgroundColor: "var(--markdown-code-bg)",
               fontFamily: '"SFMono-Regular", Consolas, monospace',
               fontSize: "0.92em",
             },
@@ -119,8 +119,8 @@ export default function IssueDetailContent({ issue }: IssueDetailContentProps) {
               overflowX: "auto",
               p: 2,
               borderRadius: 3,
-              backgroundColor: "rgba(39, 52, 50, 0.92)",
-              color: "#f4f7f5",
+              backgroundColor: "var(--markdown-pre-bg)",
+              color: "var(--markdown-pre-text)",
             },
             "& pre code": {
               p: 0,
@@ -139,17 +139,17 @@ export default function IssueDetailContent({ issue }: IssueDetailContentProps) {
               my: 2,
               overflow: "hidden",
               borderRadius: 3,
-              border: "1px solid rgba(109, 134, 125, 0.18)",
+              border: "1px solid var(--line)",
             },
             "& thead": {
-              backgroundColor: "rgba(109, 134, 125, 0.08)",
+              backgroundColor: "var(--surface-soft)",
             },
             "& th, & td": {
               minWidth: 0,
               px: 1.5,
               py: 1,
               textAlign: "left",
-              borderBottom: "1px solid rgba(109, 134, 125, 0.14)",
+              borderBottom: "1px solid var(--line)",
             },
             "& tr:last-child td": {
               borderBottom: "none",
@@ -166,7 +166,7 @@ export default function IssueDetailContent({ issue }: IssueDetailContentProps) {
             "& hr": {
               my: 2.5,
               border: 0,
-              borderTop: "1px solid rgba(109, 134, 125, 0.18)",
+              borderTop: "1px solid var(--line)",
             },
           }}
         >

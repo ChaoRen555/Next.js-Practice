@@ -84,8 +84,8 @@ const markdownSx = {
     m: 0,
     px: 2,
     py: 1,
-    borderLeft: "4px solid rgba(109, 134, 125, 0.35)",
-    backgroundColor: "rgba(255, 255, 255, 0.52)",
+    borderLeft: "4px solid var(--markdown-quote-border)",
+    backgroundColor: "var(--surface-soft)",
     color: "text.secondary",
     borderRadius: 2,
   },
@@ -95,7 +95,7 @@ const markdownSx = {
     px: 0.75,
     py: 0.25,
     borderRadius: 1,
-    backgroundColor: "rgba(109, 134, 125, 0.12)",
+    backgroundColor: "var(--markdown-code-bg)",
     fontFamily: '"SFMono-Regular", Consolas, monospace',
     fontSize: "0.92em",
   },
@@ -104,8 +104,8 @@ const markdownSx = {
     overflowX: "auto",
     p: 2,
     borderRadius: 3,
-    backgroundColor: "rgba(39, 52, 50, 0.92)",
-    color: "#f4f7f5",
+    backgroundColor: "var(--markdown-pre-bg)",
+    color: "var(--markdown-pre-text)",
   },
   "& pre code": {
     p: 0,
@@ -261,7 +261,7 @@ export default function IssueCommentsSection({
         {!commentsQuery.isLoading && !commentsQuery.isError && !comments.length ? (
           <Box
             sx={{
-              border: "1px dashed rgba(109, 134, 125, 0.28)",
+              border: "1px dashed var(--line-strong)",
               borderRadius: 3,
               px: 3,
               py: 4,
@@ -279,9 +279,9 @@ export default function IssueCommentsSection({
               <Box
                 key={comment.id}
                 sx={{
-                  border: "1px solid rgba(109, 134, 125, 0.16)",
+                  border: "1px solid var(--line)",
                   borderRadius: 3,
-                  backgroundColor: "rgba(255, 255, 255, 0.56)",
+                  backgroundColor: "var(--surface-soft)",
                   p: { xs: 2, md: 2.5 },
                 }}
               >
@@ -304,7 +304,7 @@ export default function IssueCommentsSection({
                         src={comment.authorImage ?? undefined}
                         alt={getAuthorDisplayName(comment)}
                         sx={{
-                          bgcolor: "#6d867d",
+                          bgcolor: "primary.dark",
                           height: 36,
                           width: 36,
                         }}

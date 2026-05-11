@@ -6,15 +6,15 @@ export const formatStatus = (status: IssueItem["status"]) => {
 };
 
 const statusColorMap: Record<IssueItem["status"], string> = {
-  OPEN: "#c24141",
-  CLOSED: "#2f7d4c",
-  IN_PROGRESS: "#7a4db3",
+  OPEN: "var(--status-open)",
+  CLOSED: "var(--status-closed)",
+  IN_PROGRESS: "var(--status-progress)",
 };
 
 const statusBackgroundMap: Record<IssueItem["status"], string> = {
-  OPEN: "rgba(194, 65, 65, 0.12)",
-  CLOSED: "rgba(47, 125, 76, 0.12)",
-  IN_PROGRESS: "rgba(122, 77, 179, 0.12)",
+  OPEN: "var(--status-open-bg)",
+  CLOSED: "var(--status-closed-bg)",
+  IN_PROGRESS: "var(--status-progress-bg)",
 };
 
 export const getStatusChipSx = (

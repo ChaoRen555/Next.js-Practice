@@ -28,7 +28,7 @@ const NavBar = async () => {
           href="/"
           className="relative flex items-center gap-3 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-3 py-2 transition duration-300 hover:border-[var(--accent)] hover:bg-[var(--surface-hover)]"
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[linear-gradient(135deg,#6d867d,#89a097_55%,#cbd9d4)] text-sm font-semibold uppercase tracking-[0.24em] text-white shadow-[0_12px_30px_-16px_rgba(95,121,113,0.65)]">
+          <span className="app-brand-mark flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold uppercase tracking-[0.24em]">
             NP
           </span>
           <span className="flex flex-col">

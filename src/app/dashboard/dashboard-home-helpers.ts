@@ -15,18 +15,18 @@ export const statusMeta: Record<
 > = {
   OPEN: {
     label: "Open",
-    accent: "#b94b4b",
-    background: "rgba(185, 75, 75, 0.12)",
+    accent: "var(--status-open)",
+    background: "var(--status-open-bg)",
   },
   IN_PROGRESS: {
     label: "In Progress",
-    accent: "#7561b5",
-    background: "rgba(117, 97, 181, 0.12)",
+    accent: "var(--status-progress)",
+    background: "var(--status-progress-bg)",
   },
   CLOSED: {
     label: "Closed",
-    accent: "#4e8b64",
-    background: "rgba(78, 139, 100, 0.12)",
+    accent: "var(--status-closed)",
+    background: "var(--status-closed-bg)",
   },
 };
 
@@ -45,9 +45,9 @@ export const cardSx: SxProps<Theme> = {
   position: "relative",
   overflow: "hidden",
   borderRadius: "30px",
-  border: "1px solid rgba(255, 255, 255, 0.65)",
-  backgroundColor: "rgba(255, 255, 255, 0.55)",
-  boxShadow: "0 24px 60px -38px rgba(95,121,113,0.34)",
+  border: "1px solid var(--line)",
+  backgroundColor: "var(--surface)",
+  boxShadow: "0 24px 60px -38px var(--panel-shadow)",
 };
 
 export const sectionEyebrowSx: SxProps<Theme> = {
@@ -55,25 +55,25 @@ export const sectionEyebrowSx: SxProps<Theme> = {
   fontWeight: 600,
   letterSpacing: "0.24em",
   textTransform: "uppercase",
-  color: "#5f7971",
+  color: "var(--accent-strong)",
 };
 
 export const sectionTitleSx: SxProps<Theme> = {
   fontWeight: 600,
-  color: "#273432",
+  color: "var(--text)",
 };
 
 export const issueCardSx: SxProps<Theme> = {
   display: "block",
   borderRadius: "24px",
-  border: "1px solid rgba(255,255,255,0.65)",
-  backgroundColor: "rgba(255,255,255,0.5)",
+  border: "1px solid var(--line)",
+  backgroundColor: "var(--surface-soft)",
   px: 2.5,
   py: 2.25,
   transition: "background-color 0.3s ease, border-color 0.3s ease",
   "&:hover": {
-    borderColor: "rgba(255,255,255,0.85)",
-    backgroundColor: "rgba(255,255,255,0.72)",
+    borderColor: "var(--accent)",
+    backgroundColor: "var(--surface-hover)",
   },
 };
 

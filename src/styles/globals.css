@@ -10,16 +10,37 @@
   --glow-right: rgba(212, 223, 231, 0.35);
   --surface: rgba(255, 255, 255, 0.7);
   --surface-soft: rgba(255, 255, 255, 0.4);
+  --surface-field: rgba(255, 255, 255, 0.88);
   --surface-hover: rgba(255, 255, 255, 0.72);
   --surface-strong: rgba(255, 255, 255, 0.9);
+  --surface-panel: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(247, 250, 248, 0.68));
   --text: #273432;
   --muted: #6f817d;
   --line: rgba(93, 118, 112, 0.16);
+  --line-strong: #d6e0db;
   --accent: #8ea79f;
   --accent-strong: #5f7971;
   --on-accent: #ffffff;
+  --placeholder: #9aaba6;
+  --danger-bg: #fff6f3;
+  --danger-line: #d7b4aa;
+  --danger-text: #8a4e3d;
+  --focus-ring: rgba(216, 229, 221, 0.7);
+  --markdown-quote-border: rgba(109, 134, 125, 0.35);
+  --markdown-code-bg: rgba(109, 134, 125, 0.12);
+  --markdown-pre-bg: rgba(39, 52, 50, 0.92);
+  --markdown-pre-text: #f4f7f5;
   --glass-highlight: rgba(255, 255, 255, 0.75);
   --nav-shadow: rgba(95, 121, 113, 0.35);
+  --panel-shadow: rgba(95, 121, 113, 0.42);
+  --action-shadow: rgba(39, 52, 50, 0.45);
+  --brand-gradient: linear-gradient(135deg, #6d867d, #8ea79f 58%, #d3ddd9);
+  --status-open: #c24141;
+  --status-open-bg: rgba(194, 65, 65, 0.12);
+  --status-progress: #7a4db3;
+  --status-progress-bg: rgba(122, 77, 179, 0.12);
+  --status-closed: #2f7d4c;
+  --status-closed-bg: rgba(47, 125, 76, 0.12);
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -32,16 +53,37 @@
   --glow-right: rgba(109, 128, 139, 0.14);
   --surface: rgba(23, 34, 31, 0.76);
   --surface-soft: rgba(28, 42, 38, 0.72);
+  --surface-field: rgba(18, 28, 25, 0.88);
   --surface-hover: rgba(39, 55, 50, 0.88);
   --surface-strong: rgba(24, 36, 33, 0.96);
+  --surface-panel: linear-gradient(180deg, rgba(23, 34, 31, 0.88), rgba(15, 24, 21, 0.74));
   --text: #edf5f1;
   --muted: #afc2bb;
   --line: rgba(190, 213, 204, 0.16);
+  --line-strong: rgba(190, 213, 204, 0.24);
   --accent: #9fb9af;
   --accent-strong: #c3d6cf;
   --on-accent: #101816;
+  --placeholder: #849890;
+  --danger-bg: rgba(97, 49, 40, 0.3);
+  --danger-line: rgba(215, 180, 170, 0.38);
+  --danger-text: #e8b9aa;
+  --focus-ring: rgba(159, 185, 175, 0.2);
+  --markdown-quote-border: rgba(159, 185, 175, 0.42);
+  --markdown-code-bg: rgba(159, 185, 175, 0.14);
+  --markdown-pre-bg: rgba(6, 10, 9, 0.92);
+  --markdown-pre-text: #edf5f1;
   --glass-highlight: rgba(237, 245, 241, 0.2);
   --nav-shadow: rgba(0, 0, 0, 0.55);
+  --panel-shadow: rgba(0, 0, 0, 0.58);
+  --action-shadow: rgba(0, 0, 0, 0.48);
+  --brand-gradient: linear-gradient(135deg, #7f9c91, #9fb9af 58%, #d0ded8);
+  --status-open: #ef9a9a;
+  --status-open-bg: rgba(239, 154, 154, 0.16);
+  --status-progress: #c7b7ff;
+  --status-progress-bg: rgba(199, 183, 255, 0.16);
+  --status-closed: #9dd9b0;
+  --status-closed-bg: rgba(157, 217, 176, 0.16);
 }
 
 * {
@@ -66,7 +108,90 @@ body {
 }
 
 body::selection {
-  background: rgba(142, 167, 159, 0.28);
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.app-panel {
+  border: 1px solid var(--line);
+  background: var(--surface-panel);
+  box-shadow: 0 32px 90px -44px var(--panel-shadow);
+  backdrop-filter: blur(24px);
+}
+
+.app-surface {
+  border: 1px solid var(--line-strong);
+  background: var(--surface-soft);
+}
+
+.app-field {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-field);
+  color: var(--text);
+  outline: none;
+  transition: border-color 300ms ease, box-shadow 300ms ease, background-color 300ms ease;
+}
+
+.app-field::placeholder {
+  color: var(--placeholder);
+}
+
+.app-field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+.app-label {
+  color: var(--text);
+}
+
+.app-eyebrow {
+  color: var(--accent-strong);
+}
+
+.app-primary-button,
+.app-secondary-button {
+  box-shadow: 0 20px 45px -30px var(--action-shadow);
+  transition: transform 300ms ease, background-color 300ms ease, border-color 300ms ease, box-shadow 300ms ease, color 300ms ease;
+}
+
+.app-primary-button {
+  border: 1px solid var(--accent-strong);
+  background: var(--accent-strong);
+  color: var(--on-accent);
+}
+
+.app-primary-button:hover {
+  background: var(--accent);
+  box-shadow: 0 28px 55px -30px var(--action-shadow);
+}
+
+.app-secondary-button {
+  border: 1px solid var(--line-strong);
+  background: var(--surface-strong);
+  color: var(--text);
+}
+
+.app-secondary-button:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+  box-shadow: 0 28px 55px -30px var(--action-shadow);
+}
+
+.app-brand-mark {
+  background: var(--brand-gradient);
+  color: var(--on-accent);
+  box-shadow: 0 16px 32px -18px var(--nav-shadow);
+}
+
+.app-divider {
+  background: var(--line-strong);
+}
+
+.app-error {
+  border: 1px solid var(--danger-line);
+  background: var(--danger-bg);
+  color: var(--danger-text);
 }
 
 .EasyMDEContainer {
@@ -83,7 +208,7 @@ body::selection {
 .EasyMDEContainer .editor-preview,
 .EasyMDEContainer .editor-preview-side {
   border-color: var(--line);
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--surface-field);
 }
 
 .EasyMDEContainer .CodeMirror {
@@ -99,7 +224,7 @@ body::selection {
   border-top-right-radius: 14px;
   padding: 10px 12px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(244, 248, 245, 0.92) 100%);
+    var(--surface-panel);
   backdrop-filter: blur(12px);
 }
 
@@ -121,13 +246,13 @@ body::selection {
 
 .EasyMDEContainer .editor-toolbar button:hover,
 .EasyMDEContainer .editor-toolbar button.active {
-  border-color: rgba(109, 134, 125, 0.22);
-  background: rgba(142, 167, 159, 0.14);
+  border-color: var(--line-strong);
+  background: var(--surface-hover);
 }
 
 .EasyMDEContainer .CodeMirror-focused {
-  border-color: rgba(95, 121, 113, 0.28);
-  box-shadow: 0 0 0 4px rgba(142, 167, 159, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--focus-ring);
 }
 
 .EasyMDEContainer .CodeMirror-lines {
@@ -141,7 +266,7 @@ body::selection {
 }
 
 .EasyMDEContainer .editor-preview-side {
-  border-left: 1px solid rgba(109, 134, 125, 0.14);
+  border-left: 1px solid var(--line);
 }
 
 .EasyMDEContainer .editor-preview table,
@@ -156,13 +281,13 @@ body::selection {
 .EasyMDEContainer .editor-preview-side th,
 .EasyMDEContainer .editor-preview-side td {
   padding: 10px 12px;
-  border: 1px solid rgba(109, 134, 125, 0.18);
+  border: 1px solid var(--line);
   text-align: left;
 }
 
 .EasyMDEContainer .editor-preview thead,
 .EasyMDEContainer .editor-preview-side thead {
-  background: rgba(109, 134, 125, 0.08);
+  background: var(--surface-soft);
 }
 
 a {
@@ -255,7 +380,7 @@ a {
   padding: 24px;
   border-radius: 20px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.74);
+  background: var(--surface);
   min-height: 180px;
 }
 

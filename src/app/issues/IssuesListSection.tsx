@@ -171,7 +171,7 @@ export default function IssuesListSection({
             <Table sx={{ minWidth: 640 }} size="medium">
               <TableHead
                 sx={{
-                  backgroundColor: "rgba(109, 134, 125, 0.06)",
+                  backgroundColor: "var(--surface-soft)",
                 }}
               >
                 <TableRow>
@@ -212,7 +212,7 @@ export default function IssuesListSection({
                     sx={{
                       cursor: "pointer",
                       "&:hover": {
-                        backgroundColor: "rgba(109, 134, 125, 0.04)",
+                        backgroundColor: "var(--surface-hover)",
                       },
                     }}
                   >

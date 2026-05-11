@@ -38,7 +38,7 @@ export default function LoginFieldError({
 
   return (
     <>
-      <p className="mt-2 text-sm font-medium text-[#8a4e3d] [animation:login-field-error-fade_3000ms_ease-out_forwards]">
+      <p className="mt-2 text-sm font-medium text-[var(--danger-text)] [animation:login-field-error-fade_3000ms_ease-out_forwards]">
         {message}
       </p>
       <style>

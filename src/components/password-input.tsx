@@ -5,7 +5,7 @@ import { useState, type InputHTMLAttributes } from "react";
 type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type">;
 
 const baseInputClassName =
-  "w-full rounded-2xl border border-[#d6e0db] bg-white/88 px-4 py-3 pr-20 text-base text-[#273432] outline-none transition duration-300 placeholder:text-[#9aaba6] focus:border-[#8ea79f] focus:ring-4 focus:ring-[#d8e5dd]/70";
+  "app-field rounded-2xl px-4 py-3 pr-20 text-base";
 
 export default function PasswordInput({
   className,
@@ -26,7 +26,7 @@ export default function PasswordInput({
         onClick={() => {
           setPasswordVisible((visible) => !visible);
         }}
-        className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-xl border border-transparent text-[#5f7971] transition duration-300 hover:border-[#c9d6d0] hover:bg-white"
+        className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-xl border border-transparent text-[var(--accent-strong)] transition duration-300 hover:border-[var(--line-strong)] hover:bg-[var(--surface-hover)]"
       >
         {passwordVisible ? (
           <svg

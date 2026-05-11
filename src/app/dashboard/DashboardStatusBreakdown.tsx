@@ -29,7 +29,7 @@ export default function DashboardStatusBreakdown({
         >
           Current distribution
         </Typography>
-        <Typography sx={{ fontSize: "0.95rem", color: "#6f817d" }}>
+        <Typography sx={{ fontSize: "0.95rem", color: "var(--muted)" }}>
           {totalIssues === 0
             ? "Waiting for the first issue"
             : `${totalIssues} total records`}
@@ -63,13 +63,13 @@ export default function DashboardStatusBreakdown({
                     }}
                   />
                   <Typography
-                    sx={{ fontSize: "0.95rem", fontWeight: 600, color: "#273432" }}
+                    sx={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text)" }}
                   >
                     {meta.label}
                   </Typography>
                 </Box>
 
-                <Typography sx={{ fontSize: "0.9rem", color: "#6f817d" }}>
+                <Typography sx={{ fontSize: "0.9rem", color: "var(--muted)" }}>
                   {item.count} / {percentage}%
                 </Typography>
               </Box>
@@ -78,7 +78,7 @@ export default function DashboardStatusBreakdown({
                 sx={{
                   height: 10,
                   borderRadius: "999px",
-                  backgroundColor: "#edf2ee",
+                  backgroundColor: "var(--surface-soft)",
                   overflow: "hidden",
                 }}
               >

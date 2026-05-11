@@ -74,23 +74,23 @@ const LoginPage = async ({
     <section className="relative mx-auto flex min-h-[calc(100vh-120px)] w-full max-w-6xl items-center justify-center overflow-hidden px-6 py-16 sm:px-8">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-[130%] -translate-y-[65%] rounded-full bg-[#d8e5dd]/70 blur-3xl"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-[130%] -translate-y-[65%] rounded-full bg-[var(--accent)] opacity-35 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 translate-x-[40%] translate-y-[10%] rounded-full bg-[#d5e0e7]/70 blur-3xl"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 translate-x-[40%] translate-y-[10%] rounded-full bg-[var(--accent-strong)] opacity-20 blur-3xl"
       />
 
-      <div className="relative w-full max-w-md rounded-[32px] border border-white/65 bg-[linear-gradient(180deg,rgba(255,255,255,0.82),rgba(247,250,248,0.68))] p-8 shadow-[0_32px_90px_-44px_rgba(95,121,113,0.42)] backdrop-blur-2xl sm:p-10">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#6d867d,#8ea79f_58%,#d3ddd9)] text-sm font-semibold uppercase tracking-[0.24em] text-white shadow-[0_16px_32px_-18px_rgba(95,121,113,0.55)]">
+      <div className="app-panel relative w-full max-w-md rounded-[32px] p-8 sm:p-10">
+        <div className="app-brand-mark mx-auto flex h-14 w-14 items-center justify-center rounded-2xl text-sm font-semibold uppercase tracking-[0.24em]">
           NP
         </div>
 
         <div className="mt-7 text-center">
-          <h1 className="text-3xl font-semibold text-[#273432] sm:text-[2rem]">
+          <h1 className="text-3xl font-semibold text-[var(--text)] sm:text-[2rem]">
             Welcome back
           </h1>
-          <p className="mt-3 text-sm leading-7 text-[#6f817d]">
+          <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
             Choose a sign-in method
           </p>
         </div>
@@ -132,7 +132,7 @@ const LoginPage = async ({
           <div>
             <label
               htmlFor="email"
-              className="mb-2 block text-sm font-semibold text-[#31403d]"
+              className="app-label mb-2 block text-sm font-semibold"
             >
               Email
             </label>
@@ -142,7 +142,7 @@ const LoginPage = async ({
               type="email"
               autoComplete="email"
               required
-              className="w-full rounded-2xl border border-[#d6e0db] bg-white/88 px-4 py-3 text-base text-[#273432] outline-none transition duration-300 placeholder:text-[#9aaba6] focus:border-[#8ea79f] focus:ring-4 focus:ring-[#d8e5dd]/70"
+              className="app-field rounded-2xl px-4 py-3 text-base"
             />
             <LoginFieldError message={errorMessage} />
           </div>
@@ -150,7 +150,7 @@ const LoginPage = async ({
           <div>
             <label
               htmlFor="password"
-              className="mb-2 block text-sm font-semibold text-[#31403d]"
+              className="app-label mb-2 block text-sm font-semibold"
             >
               Password
             </label>
@@ -165,18 +165,18 @@ const LoginPage = async ({
 
           <button
             type="submit"
-            className="flex w-full cursor-pointer items-center justify-center rounded-full border border-[#6d867d] bg-[#6d867d] px-5 py-3.5 text-base font-semibold text-white shadow-[0_20px_45px_-30px_rgba(39,52,50,0.45)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-[#5f7971] hover:shadow-[0_28px_55px_-30px_rgba(39,52,50,0.5)] active:translate-y-0 active:shadow-[0_18px_36px_-26px_rgba(39,52,50,0.45)]"
+            className="app-primary-button flex w-full cursor-pointer items-center justify-center rounded-full px-5 py-3.5 text-base font-semibold ease-out hover:-translate-y-0.5 active:translate-y-0"
           >
             Continue with email
           </button>
         </form>
 
         <div className="my-7 flex items-center gap-3">
-          <span className="h-px flex-1 bg-[#d6e0db]" />
-          <span className="text-xs font-semibold uppercase text-[#7f918c]">
+          <span className="app-divider h-px flex-1" />
+          <span className="text-xs font-semibold uppercase text-[var(--muted)]">
             or
           </span>
-          <span className="h-px flex-1 bg-[#d6e0db]" />
+          <span className="app-divider h-px flex-1" />
         </div>
 
         <form
@@ -190,7 +190,7 @@ const LoginPage = async ({
         >
           <button
             type="submit"
-            className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-[#d6e0db] bg-white px-5 py-3.5 text-base font-semibold text-[#273432] shadow-[0_20px_45px_-30px_rgba(39,52,50,0.45)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-[#bcc9c3] hover:bg-[#f8fbf9] hover:shadow-[0_28px_55px_-30px_rgba(39,52,50,0.5)] active:translate-y-0 active:shadow-[0_18px_36px_-26px_rgba(39,52,50,0.45)]"
+            className="app-secondary-button flex w-full cursor-pointer items-center justify-center gap-3 rounded-full px-5 py-3.5 text-base font-semibold ease-out hover:-translate-y-0.5 active:translate-y-0"
           >
             <svg
               aria-hidden="true"
@@ -229,7 +229,7 @@ const LoginPage = async ({
         >
           <button
             type="submit"
-            className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-full border border-[#d6e0db] bg-white px-5 py-3.5 text-base font-semibold text-[#273432] shadow-[0_20px_45px_-30px_rgba(39,52,50,0.45)] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:border-[#bcc9c3] hover:bg-[#f8fbf9] hover:shadow-[0_28px_55px_-30px_rgba(39,52,50,0.5)] active:translate-y-0 active:shadow-[0_18px_36px_-26px_rgba(39,52,50,0.45)]"
+            className="app-secondary-button flex w-full cursor-pointer items-center justify-center gap-3 rounded-full px-5 py-3.5 text-base font-semibold ease-out hover:-translate-y-0.5 active:translate-y-0"
           >
             <svg
               aria-hidden="true"
@@ -243,18 +243,18 @@ const LoginPage = async ({
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-[#6f817d]">
+          <p className="text-sm text-[var(--muted)]">
             Need an account?{" "}
             <Link
               href={registerHref}
-              className="font-semibold text-[#5f7971] transition duration-300 hover:text-[#41534f]"
+              className="font-semibold text-[var(--accent-strong)] transition duration-300 hover:text-[var(--text)]"
             >
               Register
             </Link>
           </p>
           <Link
             href="/"
-            className="mt-3 inline-block text-sm font-medium text-[#5f7971] transition duration-300 hover:text-[#41534f]"
+            className="mt-3 inline-block text-sm font-medium text-[var(--accent-strong)] transition duration-300 hover:text-[var(--text)]"
           >
             Back to dashboard
           </Link>

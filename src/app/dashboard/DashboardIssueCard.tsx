@@ -34,7 +34,7 @@ export default function DashboardIssueCard({
           <Box sx={{ minWidth: 0 }}>
             <Typography
               noWrap
-              sx={{ fontSize: "1rem", fontWeight: 600, color: "#273432" }}
+              sx={{ fontSize: "1rem", fontWeight: 600, color: "var(--text)" }}
             >
               {issue.title}
             </Typography>
@@ -43,7 +43,7 @@ export default function DashboardIssueCard({
                 mt: 0.75,
                 fontSize: "0.95rem",
                 lineHeight: 1.7,
-                color: "#6f817d",
+                color: "var(--muted)",
               }}
             >
               {trimDescription(issue.description) || "No description provided."}
@@ -73,7 +73,7 @@ export default function DashboardIssueCard({
             fontSize: "0.75rem",
             letterSpacing: "0.16em",
             textTransform: "uppercase",
-            color: "#6f817d",
+            color: "var(--muted)",
           }}
         >
           <Box component="span">

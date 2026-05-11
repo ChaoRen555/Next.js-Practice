@@ -20,7 +20,7 @@ export default function HomePage() {
         sx={{
           fontSize: { xs: "2rem", sm: "3rem" },
           fontWeight: 600,
-          color: "#273432",
+          color: "text.primary",
         }}
       >
         Welcome
