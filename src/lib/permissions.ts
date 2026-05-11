@@ -9,6 +9,10 @@ export type PermissionIssue = {
   creatorId: string | null;
 };
 
+export type PermissionComment = {
+  authorId: string;
+};
+
 export const isAdmin = (user: PermissionUser) => user.role === "ADMIN";
 
 export const canManageIssue = (
@@ -19,3 +23,10 @@ export const canManageIssue = (
 };
 
 export const canUpdateIssueStatus = (user: PermissionUser) => isAdmin(user);
+
+export const canDeleteComment = (
+  user: PermissionUser,
+  comment: PermissionComment,
+) => {
+  return isAdmin(user) || comment.authorId === user.id;
+};

@@ -8,10 +8,15 @@ import {
 } from "react-hook-form";
 
 import {
+  type CommentFormData,
+  createIssueComment,
   createIssue,
+  deleteIssueComment,
   deleteIssue,
   type FieldErrors as ApiFieldErrors,
+  fetchIssueComments,
   fetchIssue,
+  issueCommentsQueryKey,
   issueQueryKey,
   fetchIssues,
   issuesListQueryKey,
@@ -21,6 +26,7 @@ import {
   type IssueFormData,
   type IssueItem,
   type IssueStatus,
+  type IssueComment,
   type IssuesListParams,
 } from "@/lib/issues";
 import { createIssueSchema } from "@/lib/validationSchemas";
@@ -31,6 +37,16 @@ type CreateIssueMutationOptions = {
 
 type DeleteIssueMutationOptions = {
   onSuccess: (issueId: number) => void;
+  onError: (message: string) => void;
+};
+
+type CreateCommentMutationOptions = {
+  onSuccess: (comment: IssueComment) => void;
+  onError: (message: string) => void;
+};
+
+type DeleteCommentMutationOptions = {
+  onSuccess: (commentId: number) => void;
   onError: (message: string) => void;
 };
 
@@ -137,6 +153,15 @@ export const useIssueQuery = (issueId: number) => {
   });
 };
 
+export const useIssueCommentsQuery = (issueId: number) => {
+  return useQuery({
+    queryKey: issueCommentsQueryKey(issueId),
+    queryFn: () => fetchIssueComments(issueId),
+    enabled: Number.isInteger(issueId) && issueId > 0,
+    refetchOnMount: "always",
+  });
+};
+
 export const useCreateIssueMutation = ({ onSuccess }: CreateIssueMutationOptions) => {
   const queryClient = useQueryClient();
 
@@ -227,6 +252,60 @@ export const useDeleteIssueMutation = ({
     onError: (mutationError) => {
       const deleteIssueError = mutationError as Error;
       onError(deleteIssueError.message || "Unable to delete issue.");
+    },
+  });
+};
+
+export const useCreateCommentMutation = ({
+  onSuccess,
+  onError,
+}: CreateCommentMutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      issueId,
+      formData,
+    }: {
+      issueId: number;
+      formData: CommentFormData;
+    }) => createIssueComment(issueId, formData),
+    onSuccess: async (newComment, { issueId }) => {
+      onSuccess(newComment);
+      await queryClient.invalidateQueries({
+        queryKey: issueCommentsQueryKey(issueId),
+      });
+    },
+    onError: (mutationError) => {
+      const createCommentError = mutationError as Error;
+      onError(createCommentError.message || "Unable to add comment.");
+    },
+  });
+};
+
+export const useDeleteCommentMutation = ({
+  onSuccess,
+  onError,
+}: DeleteCommentMutationOptions) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      issueId,
+      commentId,
+    }: {
+      issueId: number;
+      commentId: number;
+    }) => deleteIssueComment(issueId, commentId),
+    onSuccess: async (_, { issueId, commentId }) => {
+      onSuccess(commentId);
+      await queryClient.invalidateQueries({
+        queryKey: issueCommentsQueryKey(issueId),
+      });
+    },
+    onError: (mutationError) => {
+      const deleteCommentError = mutationError as Error;
+      onError(deleteCommentError.message || "Unable to delete comment.");
     },
   });
 };

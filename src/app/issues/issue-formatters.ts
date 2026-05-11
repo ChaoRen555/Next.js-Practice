@@ -40,8 +40,18 @@ export const getStatusTextSx = (
   };
 };
 
+const dateTimeFormatter = new Intl.DateTimeFormat("en-US", {
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  month: "short",
+  timeZone: "UTC",
+  timeZoneName: "short",
+  year: "numeric",
+});
+
 export const formatDateTime = (value: string) => {
-  return new Date(value).toLocaleString();
+  return dateTimeFormatter.format(new Date(value));
 };
 
 const stripMarkdown = (value: string) => {

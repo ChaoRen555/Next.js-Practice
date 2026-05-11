@@ -1,5 +1,6 @@
-import type { Issue, User } from "@prisma/client";
+import type { Comment, Issue, User } from "@prisma/client";
 import {
+  canDeleteComment,
   canManageIssue,
   canUpdateIssueStatus,
   type PermissionUser,
@@ -73,6 +74,21 @@ export type IssueFormData = {
   description: string;
 };
 
+export type IssueComment = {
+  id: number;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+  authorName: string | null;
+  authorEmail: string | null;
+  authorImage: string | null;
+  canDelete: boolean;
+};
+
+export type CommentFormData = {
+  body: string;
+};
+
 export const initialIssueFormData: IssueFormData = {
   title: "",
   description: "",
@@ -83,9 +99,18 @@ export const issuesListQueryKey = (params: IssuesListParams) => {
   return [...issuesQueryKey, params] as const;
 };
 export const issueQueryKey = (issueId: number) => ["issues", issueId] as const;
+export const issueCommentsQueryKey = (issueId: number) => [
+  "issues",
+  issueId,
+  "comments",
+] as const;
 
 type IssueWithCreator = Issue & {
   creator: Pick<User, "id" | "name"> | null;
+};
+
+type CommentWithAuthor = Comment & {
+  author: Pick<User, "email" | "image" | "name"> | null;
 };
 
 export const serializeIssue = (
@@ -106,6 +131,22 @@ export const serializeIssue = (
     canEdit: canManage,
     canDelete: canManage,
     canUpdateStatus,
+  };
+};
+
+export const serializeComment = (
+  comment: CommentWithAuthor,
+  viewer?: PermissionUser | null,
+): IssueComment => {
+  return {
+    id: comment.id,
+    body: comment.body,
+    createdAt: comment.createdAt.toISOString(),
+    updatedAt: comment.updatedAt.toISOString(),
+    authorName: comment.author?.name ?? null,
+    authorEmail: comment.author?.email ?? null,
+    authorImage: comment.author?.image ?? null,
+    canDelete: viewer ? canDeleteComment(viewer, comment) : false,
   };
 };
 
@@ -263,5 +304,83 @@ export const deleteIssue = async (issueId: number) => {
 
   if (!response.ok) {
     throw new Error(data.error ?? "Unable to delete issue.");
+  }
+};
+
+export const fetchIssueComments = async (issueId: number) => {
+  const response = await fetch(`/api/issues/${issueId}/comments`, {
+    cache: "no-store",
+  });
+
+  const data = (await response.json()) as
+    | IssueComment[]
+    | {
+        error?: string;
+      };
+
+  if (!response.ok) {
+    throw new Error(
+      ("error" in data && data.error) || "Unable to load comments.",
+    );
+  }
+
+  return data as IssueComment[];
+};
+
+export const createIssueComment = async (
+  issueId: number,
+  formData: CommentFormData,
+) => {
+  const response = await fetch(`/api/issues/${issueId}/comments`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
+
+  const data = (await response.json()) as
+    | IssueComment
+    | {
+        error?: string;
+        fieldErrors?: {
+          body?: string[];
+        };
+      };
+
+  if (!response.ok) {
+    const error = new Error(
+      ("error" in data && data.error) || "Unable to add comment.",
+    ) as Error & {
+      status?: number;
+      fieldErrors?: {
+        body?: string[];
+      };
+    };
+
+    error.status = response.status;
+
+    if ("fieldErrors" in data) {
+      error.fieldErrors = data.fieldErrors;
+    }
+
+    throw error;
+  }
+
+  return data as IssueComment;
+};
+
+export const deleteIssueComment = async (
+  issueId: number,
+  commentId: number,
+) => {
+  const response = await fetch(`/api/issues/${issueId}/comments/${commentId}`, {
+    method: "DELETE",
+  });
+
+  const data = (await response.json()) as { error?: string };
+
+  if (!response.ok) {
+    throw new Error(data.error ?? "Unable to delete comment.");
   }
 };

@@ -7,6 +7,12 @@ export const createIssueSchema = z.object({
 
 export type CreateIssueInput = z.infer<typeof createIssueSchema>;
 
+export const createCommentSchema = z.object({
+  body: z.string().trim().min(1, "Comment is required").max(5000, "Comment must be 5000 characters or fewer"),
+});
+
+export type CreateCommentInput = z.infer<typeof createCommentSchema>;
+
 export const updateIssueStatusSchema = z.object({
   status: z.enum(["OPEN", "IN_PROGRESS", "CLOSED"]),
 });

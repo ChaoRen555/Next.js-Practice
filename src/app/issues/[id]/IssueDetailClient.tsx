@@ -22,6 +22,7 @@ import {
   type IssueItem,
   type IssueStatus,
 } from "@/lib/issues";
+import IssueCommentsSection from "../IssueCommentsSection";
 import IssueDeleteDialog from "../IssueDeleteDialog";
 import IssueDetailContent from "../IssueDetailContent";
 import { useDeleteIssueMutation, useUpdateIssueStatusMutation } from "../hooks";
@@ -116,6 +117,8 @@ export default function IssueDetailClient({
         <Paper sx={{ p: { xs: 3, md: 4 } }}>
           <IssueDetailContent issue={currentIssue} />
         </Paper>
+
+        <IssueCommentsSection issueId={currentIssue.id} />
 
         {currentIssue.canUpdateStatus ? (
           <Paper sx={{ p: { xs: 2.5, md: 3 } }}>

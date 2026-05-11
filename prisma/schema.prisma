@@ -18,6 +18,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
+  comments      Comment[]
   issues        Issue[]   @relation("IssueCreator")
   sessions      Session[]
 }
@@ -67,8 +68,24 @@ model Issue {
   status      Status   @default(OPEN)
   creatorId   String?
   creator     User?    @relation("IssueCreator", fields: [creatorId], references: [id], onDelete: SetNull)
+  comments    Comment[]
 
   @@index([creatorId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  issueId   Int
+  authorId  String
+
+  issue  Issue @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  author User  @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([issueId])
+  @@index([authorId])
 }
 
 enum Status {
