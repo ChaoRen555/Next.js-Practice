@@ -23,11 +23,11 @@ import {
   type IssueStatus,
 } from "@/lib/issues";
 import { getNotification } from "@/lib/notifications";
-import IssueCommentsSection from "../IssueCommentsSection";
-import IssueDeleteDialog from "../IssueDeleteDialog";
-import IssueDetailContent from "../IssueDetailContent";
-import { useDeleteIssueMutation, useUpdateIssueStatusMutation } from "../hooks";
-import { formatStatus, getStatusTextSx } from "../issue-formatters";
+import IssueCommentsSection from "./IssueCommentsSection";
+import IssueDeleteDialog from "./IssueDeleteDialog";
+import IssueDetailContent from "./IssueDetailContent";
+import { useDeleteIssueMutation, useUpdateIssueStatusMutation } from "../_hooks/hooks";
+import { formatStatus, getStatusTextSx } from "../_lib/issue-formatters";
 
 type IssueDetailClientProps = {
   issue: IssueItem;

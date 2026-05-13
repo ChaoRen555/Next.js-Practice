@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import IssuesClient from "./IssuesClient";
+import IssuesClient from "./_components/IssuesClient";
 
 const IssuesPage = () => {
   return (

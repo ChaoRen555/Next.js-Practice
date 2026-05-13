@@ -7,7 +7,7 @@ import {
   getNotificationMessage,
   getRouteNotificationKey,
 } from "@/lib/notifications";
-import LoginFieldError from "./LoginFieldError";
+import LoginFieldError from "./_components/LoginFieldError";
 
 type LoginPageProps = {
   searchParams: Promise<{

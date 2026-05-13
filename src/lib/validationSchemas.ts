@@ -7,6 +7,42 @@ export const createIssueSchema = z.object({
 
 export type CreateIssueInput = z.infer<typeof createIssueSchema>;
 
+export const projectStatuses = [
+  "PLANNED",
+  "ACTIVE",
+  "ON_HOLD",
+  "COMPLETED",
+  "CANCELLED",
+] as const;
+
+const requiredDateString = (fieldName: string) => z
+  .string()
+  .trim()
+  .min(1, `${fieldName} is required`)
+  .refine((value) => !Number.isNaN(Date.parse(value)), {
+    message: `${fieldName} must be valid`,
+  });
+
+export const createProjectSchema = z
+  .object({
+    name: z.string().trim().min(1, "Project name is required").max(255, "Project name must be 255 characters or fewer"),
+    description: z.string().trim().min(1, "Description is required").max(5000, "Description must be 5000 characters or fewer"),
+    status: z.enum(projectStatuses),
+    startDate: requiredDateString("Start date"),
+    dueDate: requiredDateString("Due date"),
+  })
+  .refine(
+    (data) => {
+      return new Date(data.startDate) <= new Date(data.dueDate);
+    },
+    {
+      message: "Due date must be after start date",
+      path: ["dueDate"],
+    },
+  );
+
+export type CreateProjectInput = z.infer<typeof createProjectSchema>;
+
 export const createCommentSchema = z.object({
   body: z.string().trim().min(1, "Comment is required").max(5000, "Comment must be 5000 characters or fewer"),
 });

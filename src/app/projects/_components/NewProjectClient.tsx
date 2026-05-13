@@ -12,43 +12,27 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { useToaster } from "@/components/toaster-provider";
-import {
-  type IssueItem,
-} from "@/lib/issues";
+import { initialProjectFormData } from "@/lib/projects";
 import { getNotification } from "@/lib/notifications";
-import { useIssueForm, useUpdateIssueMutation } from "../../hooks";
-import IssueForm from "../../IssueForm";
+import ProjectForm from "./ProjectForm";
+import { useCreateProjectMutation, useProjectForm } from "../_hooks/hooks";
 
-type EditIssueClientProps = {
-  issue: IssueItem;
-};
-
-export default function EditIssueClient({
-  issue,
-}: EditIssueClientProps) {
+export default function NewProjectClient() {
   const router = useRouter();
   const { showToast } = useToaster();
   const {
-    control,
     register,
     errors,
     submitError,
     buildSubmitHandler,
-  } = useIssueForm({
-    defaultValues: {
-      title: issue.title,
-      description: issue.description,
-    },
+  } = useProjectForm({
+    defaultValues: initialProjectFormData,
   });
 
-  const updateIssueMutation = useUpdateIssueMutation({
-    onSuccess: (updatedIssue) => {
-      showToast(
-        getNotification("issues.update.success", {
-          issueId: updatedIssue.id,
-        }),
-      );
-      router.push(`/issues/${updatedIssue.id}`);
+  const createProjectMutation = useCreateProjectMutation({
+    onSuccess: (newProject) => {
+      showToast(getNotification("projects.create.success"));
+      router.push(`/projects/${newProject.id}`);
       router.refresh();
     },
   });
@@ -62,11 +46,12 @@ export default function EditIssueClient({
               variant="overline"
               sx={{ color: "primary.dark", letterSpacing: "0.24em" }}
             >
-              Issue Board
+              Construction Management
             </Typography>
-            <Typography variant="h4">Edit Issue #{issue.id}</Typography>
+            <Typography variant="h4">Create New Project</Typography>
             <Typography color="text.secondary">
-              Update the issue title and description, then save your changes.
+              Start with a project shell. Detailed construction levels can be
+              created after the project workspace is available.
             </Typography>
           </Stack>
         </Paper>
@@ -75,35 +60,30 @@ export default function EditIssueClient({
           <Box
             component="form"
             onSubmit={buildSubmitHandler((formData) => {
-              return updateIssueMutation.mutateAsync({
-                issueId: issue.id,
-                formData,
-              });
+              return createProjectMutation.mutateAsync(formData);
             })}
           >
             <Stack spacing={3}>
-              <IssueForm
-                control={control}
+              <ProjectForm
                 errors={errors}
                 register={register}
                 submitError={submitError}
-                descriptionText="Adjust the current issue details, then save the updated version."
               />
 
               <Stack direction="row" spacing={1.5} sx={{ justifyContent: "flex-end" }}>
                 <Button
                   component={Link}
-                  href={`/issues/${issue.id}`}
-                  disabled={updateIssueMutation.isPending}
+                  href="/"
+                  disabled={createProjectMutation.isPending}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   variant="contained"
-                  disabled={updateIssueMutation.isPending}
+                  disabled={createProjectMutation.isPending}
                 >
-                  {updateIssueMutation.isPending ? "Saving..." : "Save Changes"}
+                  {createProjectMutation.isPending ? "Creating..." : "Create Project"}
                 </Button>
               </Stack>
             </Stack>

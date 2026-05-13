@@ -35,7 +35,7 @@ import {
   formatStatus,
   getStatusChipSx,
   getStatusTextSx,
-} from "./issue-formatters";
+} from "../_lib/issue-formatters";
 
 type IssuesListSectionProps = {
   issues: IssueItem[];

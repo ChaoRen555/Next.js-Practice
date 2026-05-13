@@ -26,8 +26,8 @@ import {
   useCreateCommentMutation,
   useDeleteCommentMutation,
   useIssueCommentsQuery,
-} from "./hooks";
-import { formatDateTime } from "./issue-formatters";
+} from "../_hooks/hooks";
+import { formatDateTime } from "../_lib/issue-formatters";
 
 type IssueCommentsSectionProps = {
   issueId: number;

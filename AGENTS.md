@@ -10,7 +10,8 @@ Key directories:
 - `src/app/issues/`: issues feature UI, feature-level hooks, Markdown editor integration, and page-local helpers.
 - `src/components/`: shared providers and reusable UI such as `app-theme-provider.tsx` and `query-provider.tsx`.
 - `src/lib/`: shared helpers and infrastructure such as `prisma.ts`, `issues.ts`, validation schemas, and general utilities.
-- `src/stores/`: Zustand stores for client-side UI state.
+- `src/lib/notifications.ts`: centralized notification keys, message text, severities, and route notification lookup.
+- `src/stores/`: Zustand stores for client-side UI state such as persisted theme mode.
 - `src/theme/`: MUI theme configuration.
 - `src/styles/`: global styles, Tailwind import, and project-wide design tokens in `globals.css`.
 - `prisma/`: schema and migration history.
@@ -46,9 +47,21 @@ Validation expectations:
 
 - Prefer Tailwind utilities for local layout and spacing.
 - Keep shared colors, typography, and global tokens aligned with `src/styles/globals.css`.
-- Reuse the MUI theme in `src/theme/theme.ts` instead of hardcoding repeated design values in multiple components.
-- When building MUI-based UI, preserve the existing visual direction: soft light palette, rounded surfaces, serif typography, and glass-like panels.
+- Use CSS variables from `src/styles/globals.css` for app-wide color, surface, border, focus, shadow, status, markdown, and brand values.
+- Use utility classes such as `app-panel`, `app-field`, `app-primary-button`, `app-secondary-button`, `app-brand-mark`, and `app-error` instead of repeating long color-heavy class strings.
+- Reuse the MUI theme in `src/theme/theme.ts`; add shared MUI defaults there instead of hardcoding repeated design values in individual components.
+- MUI and Tailwind are both used: prefer MUI theme tokens for MUI components and CSS variables for Tailwind/plain HTML components.
+- Avoid new raw color literals in route components unless the color is an external brand asset such as the Google logo.
+- When building MUI-based UI, preserve the existing visual direction: soft palette, rounded surfaces, restrained typography, and glass-like panels.
 - Shared client providers should be mounted once at the app shell level, not recreated inside individual pages.
+
+## Notifications & User Feedback
+
+- Keep user-facing notification text in `src/lib/notifications.ts`.
+- Use notification keys with `getNotification`, `getNotificationText`, or `getRouteNotificationKey` instead of duplicating success/error strings in pages or hooks.
+- Use `RouteToastMessage` for route-redirect feedback driven by URL parameters such as `updated` or `error`.
+- Use the global `useToaster()` API for immediate client-side mutation feedback.
+- Route and feature code should decide what happened; the centralized notification module should decide what message and severity to show.
 
 ## Data, Validation, and API Conventions
 
@@ -64,7 +77,7 @@ Validation expectations:
 
 - Use React Query for server state, fetching, mutations, cache updates, and invalidation.
 - Use React Hook Form for client-side form state, submission wiring, and field error presentation.
-- Use Zustand for transient UI state such as selected rows, dialog visibility, and local non-form UI state.
+- Use Zustand for transient or persisted client UI state such as selected rows, dialog visibility, theme mode, and local non-form UI state.
 - Do not duplicate server state in Zustand when the same data already lives in React Query cache.
 - Do not store form drafts or field-level validation state in Zustand when the form is already managed by React Hook Form.
 - Prefer feature-level hooks, for example under `src/app/issues/`, to wrap React Query usage and keep page components thin.

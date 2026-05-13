@@ -14,8 +14,8 @@ import { useRouter } from "next/navigation";
 import { useToaster } from "@/components/toaster-provider";
 import { initialIssueFormData } from "@/lib/issues";
 import { getNotification } from "@/lib/notifications";
-import { useCreateIssueMutation, useIssueForm } from "../hooks";
-import IssueForm from "../IssueForm";
+import { useCreateIssueMutation, useIssueForm } from "../_hooks/hooks";
+import IssueForm from "./IssueForm";
 
 export default function NewIssueClient() {
   const router = useRouter();

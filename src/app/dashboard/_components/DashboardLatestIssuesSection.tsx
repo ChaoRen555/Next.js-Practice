@@ -8,7 +8,7 @@ import {
   cardSx,
   sectionEyebrowSx,
   sectionTitleSx,
-} from "./dashboard-home-helpers";
+} from "../_lib/dashboard-home-helpers";
 
 type DashboardLatestIssuesSectionProps = {
   issues: IssueItem[];

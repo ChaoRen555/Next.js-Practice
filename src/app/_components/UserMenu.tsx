@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import Typography from "@mui/material/Typography";
 
-import { logoutAction } from "./actions/authActions";
+import { logoutAction } from "../actions/authActions";
 
 type UserMenuProps = {
   email?: string | null;

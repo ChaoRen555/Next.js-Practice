@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { serializeIssue } from "@/lib/issues";
 import { canManageIssue } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
-import EditIssueClient from "./EditIssueClient";
+import EditIssueClient from "../../_components/EditIssueClient";
 
 type EditIssuePageProps = {
   params: Promise<{

@@ -8,7 +8,7 @@ import {
   formatDateTime,
   formatStatus,
   getStatusChipSx,
-} from "./issue-formatters";
+} from "../_lib/issue-formatters";
 
 type IssueDetailContentProps = {
   issue: IssueItem;

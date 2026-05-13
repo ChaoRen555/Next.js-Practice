@@ -6,7 +6,7 @@ import {
   sectionTitleSx,
   statusMeta,
   type StatusKey,
-} from "./dashboard-home-helpers";
+} from "../_lib/dashboard-home-helpers";
 
 type DashboardStatusBreakdownProps = {
   items: Array<{

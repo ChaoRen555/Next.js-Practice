@@ -29,6 +29,9 @@ export type NotificationKey =
   | "issues.submit.error"
   | "issues.update.error"
   | "issues.update.success"
+  | "projects.create.error"
+  | "projects.create.success"
+  | "projects.submit.error"
   | "login.error.CredentialsSignin"
   | "login.error.OAuthAccountNotLinked"
   | "login.error.default"
@@ -112,6 +115,18 @@ const notificationMessages: Record<NotificationKey, NotificationDefinition> = {
     message: `Issue #${values?.issueId ?? ""} updated successfully.`,
     severity: "success",
   }),
+  "projects.create.error": {
+    message: "Unable to create project.",
+    severity: "error",
+  },
+  "projects.create.success": {
+    message: "Project created successfully.",
+    severity: "success",
+  },
+  "projects.submit.error": {
+    message: "Unable to submit project.",
+    severity: "error",
+  },
   "login.error.CredentialsSignin": {
     message: "Email or password is incorrect.",
     severity: "error",

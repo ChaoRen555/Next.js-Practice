@@ -9,7 +9,7 @@ import {
   issueCardSx,
   statusMeta,
   trimDescription,
-} from "./dashboard-home-helpers";
+} from "../_lib/dashboard-home-helpers";
 
 type DashboardIssueCardProps = {
   issue: IssueItem;

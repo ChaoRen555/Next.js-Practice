@@ -18,7 +18,7 @@ import {
 import { getNotification, getNotificationText } from "@/lib/notifications";
 import IssueDeleteDialog from "./IssueDeleteDialog";
 import IssuesListSection from "./IssuesListSection";
-import { useDeleteIssueMutation, useIssuesQuery } from "./hooks";
+import { useDeleteIssueMutation, useIssuesQuery } from "../_hooks/hooks";
 
 export default function IssuesClient() {
   const router = useRouter();

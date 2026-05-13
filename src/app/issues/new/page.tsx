@@ -1,4 +1,4 @@
-import NewIssueClient from "./NewIssueClient";
+import NewIssueClient from "../_components/NewIssueClient";
 
 const NewIssuePage = () => {
   return <NewIssueClient />;

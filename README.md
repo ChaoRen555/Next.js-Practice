@@ -11,6 +11,8 @@ A Next.js 16 issue tracker built with the App Router, TypeScript, Tailwind CSS v
 - Markdown-based issue descriptions.
 - Creator tracking for each issue, including database relation, API responses, and UI display.
 - React Query backed issue fetching, mutations, cache updates, sorting, filtering, and pagination.
+- Persisted light/dark theme switching powered by Zustand.
+- Centralized notification messages for route feedback and mutation toasts.
 
 ## Tech Stack
 
@@ -73,8 +75,8 @@ src/
     dashboard/  Dashboard page and route-local dashboard components
     issues/     Issues pages, hooks, forms, editor, and page-local helpers
   components/   Shared providers and reusable UI
-  lib/          Shared helpers, validation, Prisma access, and data utilities
-  stores/       Zustand stores
+  lib/          Shared helpers, validation, notifications, Prisma access, and data utilities
+  stores/       Zustand stores, including persisted theme state
   styles/       Global styles and design tokens
   theme/        MUI theme configuration
 prisma/
@@ -104,9 +106,26 @@ Each issue can be linked to a `User` through the `creator` relation. If the rela
 
 - Use the shared Prisma client from `src/lib/prisma.ts`.
 - Keep issue serialization and shared issue API helpers in `src/lib/issues.ts`.
+- Keep user-facing notification text and notification keys in `src/lib/notifications.ts`.
 - Keep request validation in `src/lib/validationSchemas.ts`.
 - Use React Query for server state, React Hook Form for form state, and Zustand only for transient client UI state.
 - Keep Markdown editing and preview behavior inside the issues feature.
+
+## Styling and Theme Notes
+
+- Global design tokens live in `src/styles/globals.css` as CSS variables.
+- MUI component defaults and palette values are generated in `src/theme/theme.ts`.
+- Tailwind is used mainly for layout, spacing, sizing, and responsive composition.
+- Use CSS variables or shared classes such as `app-panel`, `app-field`, and `app-primary-button` for app surfaces and controls.
+- Avoid adding new raw color literals in route components unless they belong to an external brand asset.
+- Theme mode is stored in `src/stores/theme-store.ts` and applied by `src/components/app-theme-provider.tsx`.
+
+## Notification Notes
+
+- Use `getNotification`, `getNotificationText`, and `getRouteNotificationKey` from `src/lib/notifications.ts` for app messages.
+- Use `RouteToastMessage` for route redirect feedback that comes from URL parameters.
+- Use `useToaster()` for immediate client-side feedback after mutations.
+- Keep feature code focused on operation results; keep message copy and severity centralized.
 
 ## Portfolio Readiness
 
@@ -120,6 +139,8 @@ Current strengths:
 - API request validation with Zod and structured JSON responses.
 - Server state management with React Query instead of duplicating server data in local client state.
 - Form handling with React Hook Form and reusable validation schemas.
+- Centralized notification handling instead of duplicated page-level message maps.
+- Theme token management across MUI, Tailwind, and global CSS variables.
 - Route-local feature organization with shared infrastructure in `src/lib`, `src/components`, `src/theme`, and `src/stores`.
 
 Recommended next steps before using this as a primary job application portfolio project:

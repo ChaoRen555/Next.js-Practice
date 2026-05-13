@@ -1,4 +1,6 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+
+import HomeProjectsSection from "./_components/home/HomeProjectsSection";
 
 export default function HomePage() {
   return (
@@ -6,25 +8,13 @@ export default function HomePage() {
       component="section"
       sx={{
         mx: "auto",
-        display: "flex",
-        minHeight: "60vh",
         width: "100%",
         maxWidth: "1200px",
-        alignItems: "center",
-        justifyContent: "center",
         px: { xs: 2, sm: 3 },
-        py: { xs: 6, sm: 8 },
+        py: { xs: 4, sm: 6 },
       }}
     >
-      <Typography
-        sx={{
-          fontSize: { xs: "2rem", sm: "3rem" },
-          fontWeight: 600,
-          color: "text.primary",
-        }}
-      >
-        Welcome
-      </Typography>
+      <HomeProjectsSection />
     </Box>
   );
 }

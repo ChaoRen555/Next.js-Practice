@@ -3,7 +3,8 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 
 import AppThemeProvider from "@/components/app-theme-provider";
 import "@/styles/globals.css";
-import NavBar from "./NavBar";
+import ConstructionSidebar from "./_components/ConstructionSidebar";
+import NavBar from "./_components/NavBar";
 
 export const metadata: Metadata = {
   title: "Next Project",
@@ -21,7 +22,10 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <AppThemeProvider>
             <NavBar />
-            <main>{children}</main>
+            <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-start">
+              <ConstructionSidebar />
+              <main className="min-w-0 flex-1">{children}</main>
+            </div>
           </AppThemeProvider>
         </AppRouterCacheProvider>
       </body>

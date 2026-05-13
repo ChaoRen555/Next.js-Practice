@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material";
 
-import DashboardLatestIssuesSection from "./DashboardLatestIssuesSection";
-import DashboardStatusBreakdown from "./DashboardStatusBreakdown";
+import DashboardLatestIssuesSection from "./_components/DashboardLatestIssuesSection";
+import DashboardStatusBreakdown from "./_components/DashboardStatusBreakdown";
 
 import { prisma } from "@/lib/prisma";
 import { serializeIssue } from "@/lib/issues";

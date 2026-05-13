@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { serializeIssue } from "@/lib/issues";
 import { prisma } from "@/lib/prisma";
-import IssueDetailClient from "./IssueDetailClient";
+import IssueDetailClient from "../_components/IssueDetailClient";
 
 type IssueDetailPageProps = {
   params: Promise<{
