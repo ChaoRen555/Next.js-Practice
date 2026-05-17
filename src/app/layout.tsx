@@ -22,7 +22,7 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <AppThemeProvider>
             <NavBar />
-            <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-start">
+            <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-start">
               <ConstructionSidebar />
               <main className="min-w-0 flex-1">{children}</main>
             </div>

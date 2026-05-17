@@ -31,6 +31,9 @@ export type NotificationKey =
   | "issues.update.success"
   | "projects.create.error"
   | "projects.create.success"
+  | "projects.import.error"
+  | "projects.import.success"
+  | "projects.import.validationError"
   | "projects.submit.error"
   | "login.error.CredentialsSignin"
   | "login.error.OAuthAccountNotLinked"
@@ -122,6 +125,18 @@ const notificationMessages: Record<NotificationKey, NotificationDefinition> = {
   "projects.create.success": {
     message: "Project created successfully.",
     severity: "success",
+  },
+  "projects.import.error": {
+    message: "Unable to import work breakdown.",
+    severity: "error",
+  },
+  "projects.import.success": (values) => ({
+    message: `Imported ${values?.rowsProcessed ?? 0} work breakdown rows.`,
+    severity: "success",
+  }),
+  "projects.import.validationError": {
+    message: "Fix the import file and try again.",
+    severity: "error",
   },
   "projects.submit.error": {
     message: "Unable to submit project.",

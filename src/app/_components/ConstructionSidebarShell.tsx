@@ -19,7 +19,7 @@ const ConstructionSidebarShell = ({
 
   return (
     <aside
-      className="app-panel construction-sidebar--framed w-full shrink-0 rounded-lg p-3 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:w-80 lg:overflow-y-auto"
+      className="app-panel construction-sidebar--framed w-full shrink-0 rounded-lg p-2 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:w-44 lg:overflow-y-auto"
     >
       {children}
     </aside>
